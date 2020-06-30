@@ -3,6 +3,7 @@ package pl.ostek.internet_chat.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.ostek.internet_chat.model.PropertiesReader;
 
 @RestController
 public class PropertiesController {
