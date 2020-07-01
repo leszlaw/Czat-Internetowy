@@ -1,9 +1,15 @@
 package pl.ostek.internet_chat.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChatUser {
 
-    int id;
-    String userName;
+    private int id;
+    private String userName;
+    private List<ChatMessage> sent = new ArrayList<>();
+    private List<ChatMessage> received = new ArrayList<>();
+
 
     public ChatUser(int id, String userName) {
         this.id = id;
@@ -25,5 +31,22 @@ public class ChatUser {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public List<ChatMessage> getSent() {
+        return sent;
+    }
+
+    public void setSent(List<ChatMessage> sent) {
+        this.sent = sent;
+    }
+
+    public List<ChatMessage> getReceived() {
+        return received;
+    }
+
+    public void setReceived(List<ChatMessage> received) {
+        this.received = received;
+    }
+
 
 }

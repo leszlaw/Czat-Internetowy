@@ -2,12 +2,15 @@ package pl.ostek.internet_chat.model;
 
 public class ChatMessage {
 
-    int id;
-    String message;
+    private int id;
+    private String message;
+    private int receiverId;
+    private int senderId;
 
-    public ChatMessage(int id, String message) {
+    public ChatMessage(int id, String message, int receiverId) {
         this.id = id;
         this.message = message;
+        this.receiverId=receiverId;
     }
 
     public int getId() {
@@ -26,5 +29,19 @@ public class ChatMessage {
         this.message = message;
     }
 
+    public int getReceiverId() {
+        return receiverId;
+    }
 
+    public void setReceiverId(int receiverId) {
+        this.receiverId = receiverId;
+    }
+
+    public int getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(int senderId) {
+        this.senderId = senderId;
+    }
 }
