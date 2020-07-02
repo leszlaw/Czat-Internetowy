@@ -1,5 +1,9 @@
 package pl.ostek.internet_chat.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
 public class ChatMessage {
 
     private int id;
@@ -13,35 +17,4 @@ public class ChatMessage {
         this.receiverId=receiverId;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public int getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(int receiverId) {
-        this.receiverId = receiverId;
-    }
-
-    public int getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(int senderId) {
-        this.senderId = senderId;
-    }
 }

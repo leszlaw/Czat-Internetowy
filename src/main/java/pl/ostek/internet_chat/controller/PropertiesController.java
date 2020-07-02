@@ -1,6 +1,5 @@
 package pl.ostek.internet_chat.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.ostek.internet_chat.model.PropertiesReader;
@@ -9,8 +8,7 @@ import pl.ostek.internet_chat.model.PropertiesReader;
 public class PropertiesController {
 	
 	private PropertiesReader propertiesReader;
-	
-	@Autowired
+
 	public PropertiesController(PropertiesReader propertiesReader) {
 		this.propertiesReader=propertiesReader;
 	}
