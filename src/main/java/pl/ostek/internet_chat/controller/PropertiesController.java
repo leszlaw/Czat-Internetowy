@@ -1,22 +1,19 @@
 package pl.ostek.internet_chat.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.ostek.internet_chat.model.PropertiesReader;
 
 @RestController
+@RequiredArgsConstructor
 public class PropertiesController {
-	
-	private PropertiesReader propertiesReader;
 
-	public PropertiesController(PropertiesReader propertiesReader) {
-		this.propertiesReader=propertiesReader;
-	}
-	
-	@RequestMapping("/version")
-	public String getVersion() {
-		return propertiesReader.getVersion();
-	}
-	
+    private final PropertiesReader propertiesReader;
+
+    @GetMapping("/version")
+    public String getVersion() {
+        return propertiesReader.getVersion();
+    }
 
 }
