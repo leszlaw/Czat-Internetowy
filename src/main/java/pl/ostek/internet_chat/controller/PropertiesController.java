@@ -3,7 +3,7 @@ package pl.ostek.internet_chat.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.ostek.internet_chat.model.PropertiesReader;
+import pl.ostek.internet_chat.service.PropertiesReader;
 
 @RestController
 @RequiredArgsConstructor

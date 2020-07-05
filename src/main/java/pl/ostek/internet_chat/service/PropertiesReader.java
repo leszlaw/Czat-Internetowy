@@ -1,4 +1,4 @@
-package pl.ostek.internet_chat.model;
+package pl.ostek.internet_chat.service;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
