@@ -4,9 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.ostek.internet_chat.exception.MessageServiceException;
 import pl.ostek.internet_chat.model.Message;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class MessageService {
@@ -27,12 +25,8 @@ public class MessageService {
         messageRepository.get(receiverId).add(message);
     }
 
-    public List<Message> getAllMessages() {
-        List<Message> allMessages = new ArrayList<>();
-        messageRepository.values().stream().forEach((c) -> {
-            allMessages.addAll(c);
-        });
-        return allMessages;
+    public Map<String, List<Message>> getAllMessages() {
+        return Collections.unmodifiableMap(messageRepository);
     }
 
     public HashMap<String, List<Message>> getMessageRepository() {
