@@ -8,8 +8,8 @@ import pl.ostek.internet_chat.model.Message;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class MessageServiceTest {
 
@@ -27,12 +27,11 @@ class MessageServiceTest {
         Message message = new Message(messageString, receiverId);
         //when
         messageService.sendMessage(message);
-        HashMap<String, List<Message>> messageRepository = messageService.getMessageRepository();
+        Map<String, List<Message>> messageRepository = messageService.getAllMessages();
         //then
         assertThat(message).isEqualTo(messageRepository.get(receiverId).get(0));
 
     }
-
 
     @ParameterizedTest(name = "Send {0} to {1} not throw exception..")
     @CsvSource(value = {
@@ -80,18 +79,4 @@ class MessageServiceTest {
         }).isInstanceOf(MessageServiceException.class).hasMessageContaining(expectedExceptionMessage);
     }
 
-    @ParameterizedTest(name = "Gives {0} messages for {0} messages sent.")
-    @CsvSource({
-            "0", "1", "50", "501", "999"
-    })
-    void getAllMessages_SendXMessages_ReturnXMessages(int count) {
-        //given
-        MessageService messageService = new MessageService();
-        for (int i = 0; i < count; i++)
-            messageService.sendMessage(new Message("123", "123"));
-        //when
-        int result = messageService.getAllMessages().size();
-        //then
-        assertThat(result).isEqualTo(count);
-    }
 }

@@ -29,7 +29,4 @@ public class MessageService {
         return Collections.unmodifiableMap(messageRepository);
     }
 
-    public HashMap<String, List<Message>> getMessageRepository() {
-        return messageRepository;
-    }
 }
