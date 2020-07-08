@@ -18,7 +18,6 @@ public class MessageService {
             throw new MessageServiceException("ReceiverId should not be empty array or null!");
         if (message.getMessage() == null || message.getMessage().equals(""))
             throw new MessageServiceException("Message string should not be empty array or null!");
-
         String receiverId = message.getReceiverId();
         if (messageRepository.get(receiverId) == null)
             messageRepository.put(receiverId, new ArrayList<>());
