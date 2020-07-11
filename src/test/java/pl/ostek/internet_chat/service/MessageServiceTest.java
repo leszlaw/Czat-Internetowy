@@ -36,7 +36,7 @@ class MessageServiceTest {
     @ParameterizedTest(name = "Send \"{0}\" to Bob throws exception.")
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
-    void sendMessage_blankMessageString_ExceptionThrown(String messageString){
+    void sendMessage_BlankMessageString_ExceptionThrown(String messageString){
         //given
         Message message = new Message(messageString, "Bob");
         //expected
@@ -48,7 +48,7 @@ class MessageServiceTest {
     @ParameterizedTest(name = "Send \"123\" to \"{0}\" throws exception.")
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
-    void sendMessage_blankReceiverId_ExceptionThrown(String receiverId){
+    void sendMessage_BlankReceiverId_ExceptionThrown(String receiverId){
         //given
         Message message = new Message("123", receiverId);
         //expected
