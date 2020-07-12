@@ -43,19 +43,34 @@ class MessageControllerTest {
     }
 
     @Test
-    public void getAllMessages_GetAllMessages_ReturnJsonArray() throws Exception {
+    public void getAllMessages_GetAllMessages_ReturnFilledJsonArray() throws Exception {
         //given
         Message message1 = new Message("123", "Alice");
         Message message2 = new Message("123", "Alice");
+        Message message3 = new Message("123", "Bob");
         Map<String, List<Message>> allMessages = new HashMap<>();
         allMessages.put("Alice", Arrays.asList(message1, message2));
+        allMessages.put("Bob", Arrays.asList(message3));
         given(messageService.getAllMessages()).willReturn(allMessages);
         //expected
         mvc.perform(get("/messages")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(1)))
-                .andExpect(jsonPath("$.Alice.*", hasSize(2)));
+                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$.Alice.*", hasSize(2)))
+                .andExpect(jsonPath("$.Bob.*", hasSize(1)));
+    }
+
+    @Test
+    public void getAllMessages_GetAllMessages_ReturnEmptyJsonArray() throws Exception {
+        //given
+        Map<String, List<Message>> allMessages = new HashMap<>();
+        given(messageService.getAllMessages()).willReturn(allMessages);
+        //expected
+        mvc.perform(get("/messages")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(0)));
     }
 
     private String asJsonString(final Object obj) {
