@@ -1,11 +1,12 @@
 package pl.ostek.internet_chat.service;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import pl.ostek.internet_chat.exception.MessageServiceException;
 import pl.ostek.internet_chat.model.Message;
 
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class MessageService {
@@ -15,9 +16,9 @@ public class MessageService {
     public void sendMessage(Message message) {
         if (message == null)
             throw new MessageServiceException("Message object should not be null!");
-        if (StringUtils.isBlank(message.getReceiverId()))
+        if (isBlank(message.getReceiverId()))
             throw new MessageServiceException("ReceiverId should not be empty array or null!");
-        if (StringUtils.isBlank(message.getMessage()))
+        if (isBlank(message.getMessage()))
             throw new MessageServiceException("Message string should not be empty array or null!");
         String receiverId = message.getReceiverId();
         if (messageRepository.get(receiverId) == null)
