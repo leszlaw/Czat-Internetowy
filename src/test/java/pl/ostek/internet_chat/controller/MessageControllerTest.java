@@ -2,12 +2,10 @@ package pl.ostek.internet_chat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.ostek.internet_chat.model.Message;
@@ -18,36 +16,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(MessageController.class)
 class MessageControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private MessageService messageService;
 
     @Test
-    public void sendMessage_SendMessage_StatusOk() throws Exception {
+    public void sendMessage_CorrectMessage_StatusOk() throws Exception {
         //given
         Message message = new Message("123", "Bob");
         //when
         ResultActions result = mvc.perform(post("/messages")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(message)));
+                .content(objectMapper.writeValueAsString(message)));
         //then
-        result.andExpect(status().isOk());
+        result.andExpect(status().isOk())
+                .andDo(print());
+        verify(messageService).sendMessage(message);
     }
 
     @Test
-    public void getAllMessages_GetAllMessages_StatusOk() throws Exception {
+    public void getAllMessages_ThreeMessages_ReturnJsonArray() throws Exception {
         //given
         Message message1 = new Message("123", "Alice");
         Message message2 = new Message("123", "Alice");
@@ -61,18 +63,12 @@ class MessageControllerTest {
                 .contentType(MediaType.APPLICATION_JSON));
         //then
         result.andExpect(status().isOk())
+                .andExpect(content().string(objectMapper.writeValueAsString(allMessages)))
                 .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$.Alice.*", hasSize(2)))
-                .andExpect(jsonPath("$.Bob.*", hasSize(1)));
+                .andExpect(jsonPath("$.Bob.*", hasSize(1)))
+                .andDo(print());
 
-    }
-
-    private String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
