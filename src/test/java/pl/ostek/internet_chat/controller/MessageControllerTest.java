@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.service.MessageService;
 
@@ -34,16 +35,19 @@ class MessageControllerTest {
     private MessageService messageService;
 
     @Test
-    public void sendMessage_MessageSent_StatusOk() throws Exception {
+    public void sendMessage_SendMessage_StatusOk() throws Exception {
+        //given
         Message message = new Message("123", "Bob");
-        mvc.perform(post("/messages")
+        //when
+        ResultActions result = mvc.perform(post("/messages")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(message)))
-                .andExpect(status().isOk());
+                .content(asJsonString(message)));
+        //then
+        result.andExpect(status().isOk());
     }
 
     @Test
-    public void getAllMessages_GetAllMessages_ReturnFilledJsonArray() throws Exception {
+    public void getAllMessages_GetAllMessages_StatusOk() throws Exception {
         //given
         Message message1 = new Message("123", "Alice");
         Message message2 = new Message("123", "Alice");
@@ -52,25 +56,15 @@ class MessageControllerTest {
         allMessages.put("Alice", Arrays.asList(message1, message2));
         allMessages.put("Bob", Arrays.asList(message3));
         given(messageService.getAllMessages()).willReturn(allMessages);
-        //expected
-        mvc.perform(get("/messages")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+        //when
+        ResultActions result = mvc.perform(get("/messages")
+                .contentType(MediaType.APPLICATION_JSON));
+        //then
+        result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$.Alice.*", hasSize(2)))
                 .andExpect(jsonPath("$.Bob.*", hasSize(1)));
-    }
 
-    @Test
-    public void getAllMessages_GetAllMessages_ReturnEmptyJsonArray() throws Exception {
-        //given
-        Map<String, List<Message>> allMessages = new HashMap<>();
-        given(messageService.getAllMessages()).willReturn(allMessages);
-        //expected
-        mvc.perform(get("/messages")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.*", hasSize(0)));
     }
 
     private String asJsonString(final Object obj) {
