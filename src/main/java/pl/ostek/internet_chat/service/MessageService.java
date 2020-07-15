@@ -23,6 +23,7 @@ public class MessageService {
         String receiverId = message.getReceiverId();
         if (messageRepository.get(receiverId) == null)
             messageRepository.put(receiverId, new ArrayList<>());
+        messageRepository.get(receiverId).add(message);
     }
 
     public Map<String, List<Message>> getAllMessages() {
