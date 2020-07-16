@@ -12,6 +12,7 @@ import pl.ostek.internet_chat.InternetChatApplication;
 import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.service.MessageService;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -43,6 +44,8 @@ public class MessageControllerIntegrationTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print());
+        assertThat(messageService.getAllMessages().get(message.getReceiverId()).get(0))
+                .isEqualTo(message);
     }
 
     @Test
