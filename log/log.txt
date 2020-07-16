@@ -1,0 +1,4 @@
+2068 [main] INFO  p.o.i.InternetChatApplication - Starting InternetChatApplication on Dell with PID 6448 (C:\Users\Admin\Desktop\praktyki\Czat-Internetowy\target\classes started by Admin in C:\Users\Admin\Desktop\praktyki\Czat-Internetowy)
+2079 [main] DEBUG p.o.i.InternetChatApplication - Running with Spring Boot v2.3.1.RELEASE, Spring v5.2.7.RELEASE
+2080 [main] INFO  p.o.i.InternetChatApplication - No active profile set, falling back to default profiles: default
+6543 [main] INFO  p.o.i.InternetChatApplication - Started InternetChatApplication in 5.758 seconds (JVM running for 6.952)
