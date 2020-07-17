@@ -3,7 +3,7 @@ package pl.ostek.internet_chat.service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
-import pl.ostek.internet_chat.exception.MessageServiceException;
+import pl.ostek.internet_chat.exception.BlankMessageException;
 import pl.ostek.internet_chat.model.Message;
 
 import static org.assertj.core.api.Assertions.*;
@@ -42,7 +42,7 @@ class MessageServiceTest {
         //expected
         assertThatThrownBy(() -> {
             messageService.sendMessage(message);
-        }).isInstanceOf(MessageServiceException.class).hasMessageContaining("Message string should not be empty array or null!");
+        }).isInstanceOf(BlankMessageException.class).hasMessageContaining("Message string should not be empty array or null!");
     }
 
     @ParameterizedTest(name = "Send \"123\" to \"{0}\" throws exception.")
@@ -54,7 +54,7 @@ class MessageServiceTest {
         //expected
         assertThatThrownBy(() -> {
             messageService.sendMessage(message);
-        }).isInstanceOf(MessageServiceException.class).hasMessageContaining("ReceiverId should not be empty array or null!");
+        }).isInstanceOf(BlankMessageException.class).hasMessageContaining("ReceiverId should not be empty array or null!");
     }
 
     @Test
@@ -64,7 +64,7 @@ class MessageServiceTest {
         //expected
         assertThatThrownBy(() -> {
             messageService.sendMessage(message);
-        }).isInstanceOf(MessageServiceException.class).hasMessageContaining("Message object should not be null!");
+        }).isInstanceOf(BlankMessageException.class).hasMessageContaining("Message object should not be null!");
     }
 
 }
