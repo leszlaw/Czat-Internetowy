@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 import pl.ostek.internet_chat.exception.BlankMessageException;
 import pl.ostek.internet_chat.model.Message;
+import pl.ostek.internet_chat.repository.MessageRepository;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 
 class MessageServiceTest {
 
-    private MessageService messageService = new MessageService();
+    private MessageService messageService=new MessageService(new MessageRepository());
 
     @ParameterizedTest(name = "Send {0} to {1}.")
     @CsvSource(value = {

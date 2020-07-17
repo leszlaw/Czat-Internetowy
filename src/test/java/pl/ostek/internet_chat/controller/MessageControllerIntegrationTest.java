@@ -1,6 +1,7 @@
 package pl.ostek.internet_chat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,7 +11,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.ostek.internet_chat.InternetChatApplication;
 import pl.ostek.internet_chat.model.Message;
-import pl.ostek.internet_chat.service.MessageService;
+import pl.ostek.internet_chat.repository.MessageRepository;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -31,7 +34,12 @@ public class MessageControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private MessageService messageService;
+    private MessageRepository messageRepository;
+
+    @BeforeEach
+    public void initEach(){
+        messageRepository.clear();
+    }
 
     @Test
     public void sendMessage_CorrectMessage_StatusOk() throws Exception {
@@ -44,7 +52,7 @@ public class MessageControllerIntegrationTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print());
-        assertThat(messageService.getAllMessages().get(message.getReceiverId()).get(0))
+        assertThat(messageRepository.get(message.getReceiverId()).get(0))
                 .isEqualTo(message);
     }
 
@@ -54,18 +62,17 @@ public class MessageControllerIntegrationTest {
         Message message1 = new Message("123", "Alice");
         Message message2 = new Message("123", "Alice");
         Message message3 = new Message("123", "Bob");
-        messageService.sendMessage(message1);
-        messageService.sendMessage(message2);
-        messageService.sendMessage(message3);
+        messageRepository.put("Alice", Arrays.asList(message1,message2));
+        messageRepository.put("Bob", Arrays.asList(message3));
         //when
         ResultActions result = mvc.perform(get("/messages")
                 .contentType(MediaType.APPLICATION_JSON));
         //then
         result.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(messageService.getAllMessages())))
+                .andExpect(content().string(objectMapper.writeValueAsString(messageRepository)))
                 .andExpect(jsonPath("$.*", hasSize(2)))
                 .andExpect(jsonPath("$.Alice.*", hasSize(2)))
-                .andExpect(jsonPath("$.Bob.*", hasSize(2)))
+                .andExpect(jsonPath("$.Bob.*", hasSize(1)))
                 .andDo(print());
 
     }
