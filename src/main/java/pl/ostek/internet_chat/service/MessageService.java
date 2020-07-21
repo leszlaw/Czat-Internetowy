@@ -3,7 +3,6 @@ package pl.ostek.internet_chat.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.ostek.internet_chat.exception.BlankMessageException;
-import pl.ostek.internet_chat.exception.InvalidMessageDataLengthException;
 import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.repository.MessageRepository;
 
@@ -24,13 +23,14 @@ public class MessageService {
             throw new BlankMessageException("ReceiverId should not be empty array or null!");
         if (isBlank(message.getMessage()))
             throw new BlankMessageException("Message string should not be empty array or null!");
-        if(message.getReceiverId().length()<3)
-            throw new InvalidMessageDataLengthException("Receiver id should be longer than 2!");
-        messageRepository.save(message);
+        String receiverId = message.getReceiverId();
+        if (messageRepository.get(receiverId) == null)
+            messageRepository.put(receiverId, new ArrayList<>());
+        messageRepository.get(receiverId).add(message);
     }
 
-    public List<Message> getAllMessages() {
-        return messageRepository.findAll();
+    public Map<String, List<Message>> getAllMessages() {
+        return Collections.unmodifiableMap(messageRepository);
     }
 
 }

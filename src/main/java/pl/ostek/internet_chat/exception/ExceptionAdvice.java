@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ExceptionAdvice {
 
     @ResponseBody
-    @ExceptionHandler(value = {BlankMessageException.class,InvalidMessageDataLengthException.class})
-    public ResponseEntity<Object> messageServiceExceptionHandler(RuntimeException ex){
+    @ExceptionHandler(BlankMessageException.class)
+    public ResponseEntity<Object> messageServiceExceptionHandler(BlankMessageException ex){
         log.warn("Returning Http 400 Bad Request "+ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

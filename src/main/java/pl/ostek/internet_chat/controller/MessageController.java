@@ -24,7 +24,7 @@ public class MessageController {
     }
 
     @GetMapping
-    public List<Message> getAllMessages(){
+    public Map<String, List<Message>> getAllMessages(){
         var allMessages = messageService.getAllMessages();
         log.info("action=getAllMessages status=successful");
         return allMessages;
