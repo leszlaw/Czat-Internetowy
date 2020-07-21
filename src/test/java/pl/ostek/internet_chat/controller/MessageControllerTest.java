@@ -11,12 +11,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.service.MessageService;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -37,7 +33,7 @@ class MessageControllerTest {
     @Test
     public void sendMessage_CorrectMessage_StatusOk() throws Exception {
         //given
-        Message message = new Message("123", "Bob");
+        Message message = Message.builder().receiverId("Bob").message("123").build();
         //when
         ResultActions result = mvc.perform(post("/messages")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,12 +47,10 @@ class MessageControllerTest {
     @Test
     public void getAllMessages_ThreeMessages_ReturnJsonArray() throws Exception {
         //given
-        Message message1 = new Message("123", "Alice");
-        Message message2 = new Message("123", "Alice");
-        Message message3 = new Message("123", "Bob");
-        Map<String, List<Message>> allMessages = new HashMap<>();
-        allMessages.put("Alice", Arrays.asList(message1, message2));
-        allMessages.put("Bob", Arrays.asList(message3));
+        Message message1 = Message.builder().receiverId("Alice").message("123").build();
+        Message message2 = Message.builder().receiverId("Bob").message("123").build();
+        List<Message> allMessages = Arrays.asList(message1,message2);
+
         given(messageService.getAllMessages()).willReturn(allMessages);
         //when
         ResultActions result = mvc.perform(get("/messages")
@@ -64,9 +58,6 @@ class MessageControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(allMessages)))
-                .andExpect(jsonPath("$.*", hasSize(2)))
-                .andExpect(jsonPath("$.Alice.*", hasSize(2)))
-                .andExpect(jsonPath("$.Bob.*", hasSize(1)))
                 .andDo(print());
 
     }
