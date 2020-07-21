@@ -1,35 +1,20 @@
 package pl.ostek.internet_chat.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import pl.ostek.internet_chat.exception.BlankMessageException;
 import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.repository.MessageRepository;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 class MessageServiceTest {
 
-    private MessageService messageService;
-
-    private MessageRepository messageRepository;
-
-    @BeforeEach
-    public void initAll(){
-        messageRepository=mock(MessageRepository.class);
-        messageService=new MessageService(messageRepository);
-    }
+    private MessageService messageService=new MessageService(new MessageRepository());
 
     @ParameterizedTest(name = "Send {0} to {1}.")
     @CsvSource(value = {
@@ -41,11 +26,12 @@ class MessageServiceTest {
     }, delimiter = ':')
     void sendMessage_MessageSent_ReceiverHasMesssage(String messageString, String receiverId) {
         //given
-        Message message = Message.builder().receiverId(receiverId).message(messageString).build();
+        Message message = new Message(messageString, receiverId);
         //when
         messageService.sendMessage(message);
+        Map<String, List<Message>> messageRepository = messageService.getAllMessages();
         //then
-        verify(messageRepository).save(message);
+        assertThat(message).isEqualTo(messageRepository.get(receiverId).get(0));
     }
 
     @ParameterizedTest(name = "Send \"{0}\" to Bob throws exception.")
@@ -53,7 +39,7 @@ class MessageServiceTest {
     @ValueSource(strings = {"  ", "\t", "\n"})
     void sendMessage_BlankMessageString_ExceptionThrown(String messageString){
         //given
-        Message message = Message.builder().receiverId("Bob").message(messageString).build();
+        Message message = new Message(messageString, "Bob");
         //expected
         assertThatThrownBy(() -> {
             messageService.sendMessage(message);
@@ -65,7 +51,7 @@ class MessageServiceTest {
     @ValueSource(strings = {"  ", "\t", "\n"})
     void sendMessage_BlankReceiverId_ExceptionThrown(String receiverId){
         //given
-        Message message = Message.builder().receiverId(receiverId).message("123").build();
+        Message message = new Message("123", receiverId);
         //expected
         assertThatThrownBy(() -> {
             messageService.sendMessage(message);
