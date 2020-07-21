@@ -1,6 +1,6 @@
 package pl.ostek.internet_chat.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.ostek.internet_chat.exception.BlankMessageException;
 import pl.ostek.internet_chat.model.Message;
@@ -11,7 +11,7 @@ import java.util.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MessageService {
 
     private final MessageRepository messageRepository;
