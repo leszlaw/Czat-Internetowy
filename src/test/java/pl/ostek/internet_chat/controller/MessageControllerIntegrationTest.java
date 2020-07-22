@@ -37,13 +37,13 @@ public class MessageControllerIntegrationTest {
 
     @BeforeEach
     public void initEach(){
-        messageRepository.clear();
+        messageRepository.deleteAll();
     }
 
     @Test
     public void sendMessage_CorrectMessage_StatusOk() throws Exception {
         //given
-        Message message = new Message("123", "Bob");
+        Message message = Message.builder().message("123").receiverId("Bob").build();
         String jsonBody = "{\"message\":\"123\",\"receiverId\":\"Bob\",\"senderId\":null}";
         //when
         ResultActions result = mvc.perform(post("/messages")
@@ -52,33 +52,31 @@ public class MessageControllerIntegrationTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print());
-        assertThat(messageRepository.get(message.getReceiverId()).get(0))
-                .isEqualTo(message);
+        assertThat(messageRepository.findAll().get(0).getMessage())
+                .isEqualTo(message.getMessage());
+        assertThat(messageRepository.findAll().get(0).getReceiverId())
+                .isEqualTo(message.getReceiverId());
     }
 
     @Test
     public void getAllMessages_ThreeMessages_ReturnJsonArray() throws Exception {
         //given
-        Message message1 = new Message("123", "Alice");
-        Message message2 = new Message("123", "Alice");
-        Message message3 = new Message("123", "Bob");
-        messageRepository.put("Alice", Arrays.asList(message1,message2));
-        messageRepository.put("Bob", Arrays.asList(message3));
-        String expectedString = "{\"Bob\":[{\"message\":\"123\",\"receiverId\":" +
-                "\"Bob\",\"senderId\":null}],\"Alice\":" +
-                "[{\"message\":\"123\",\"receiverId\":\"" +
-                "Alice\",\"senderId\":null},{\"message\":" +
-                "\"123\",\"receiverId\":\"Alice\",\"senderId\":null}]}";
+        Message message1 = Message.builder().message("123").receiverId("Alice").build();
+        Message message2 = Message.builder().message("123").receiverId("Alice").build();
+        Message message3 = Message.builder().message("123").receiverId("Bob").build();
+        messageRepository.save(message1);
+        messageRepository.save(message2);
+        messageRepository.save(message3);
+        String expectedString = "[{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":null}," +
+                "{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":null}," +
+                "{\"message\":\"123\",\"receiverId\":\"Bob\",\"senderId\":null}]";
         //when
         ResultActions result = mvc.perform(get("/messages")
                 .contentType(MediaType.APPLICATION_JSON));
         //then
         result.andExpect(status().isOk())
                 .andExpect(content().string(expectedString))
-                .andExpect(jsonPath("$.*", hasSize(2)))
-                .andExpect(jsonPath("$.Alice.*", hasSize(2)))
-                .andExpect(jsonPath("$.Bob.*", hasSize(1)))
-                .andExpect(content().string(objectMapper.writeValueAsString(messageRepository)))
+                .andExpect(content().string(objectMapper.writeValueAsString(messageRepository.findAll())))
                 .andDo(print());
 
     }

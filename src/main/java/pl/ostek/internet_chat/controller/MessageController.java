@@ -7,7 +7,6 @@ import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.service.MessageService;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class MessageController {
     }
 
     @GetMapping
-    public Map<String, List<Message>> getAllMessages(){
+    public List<Message> getAllMessages(){
         var allMessages = messageService.getAllMessages();
         log.info("action=getAllMessages status=successful");
         return allMessages;

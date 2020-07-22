@@ -37,7 +37,7 @@ class MessageControllerTest {
     @Test
     public void sendMessage_CorrectMessage_StatusOk() throws Exception {
         //given
-        Message message = new Message("123", "Bob");
+        Message message = Message.builder().message("123").receiverId("Bob").build();
         //when
         ResultActions result = mvc.perform(post("/messages")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,12 +51,10 @@ class MessageControllerTest {
     @Test
     public void getAllMessages_ThreeMessages_ReturnJsonArray() throws Exception {
         //given
-        Message message1 = new Message("123", "Alice");
-        Message message2 = new Message("123", "Alice");
-        Message message3 = new Message("123", "Bob");
-        Map<String, List<Message>> allMessages = new HashMap<>();
-        allMessages.put("Alice", Arrays.asList(message1, message2));
-        allMessages.put("Bob", Arrays.asList(message3));
+        Message message1 = Message.builder().message("123").receiverId("Alice").build();
+        Message message2 = Message.builder().message("123").receiverId("Alice").build();
+        Message message3 = Message.builder().message("123").receiverId("Bob").build();
+        List<Message> allMessages=Arrays.asList(message1,message2,message3);
         given(messageService.getAllMessages()).willReturn(allMessages);
         //when
         ResultActions result = mvc.perform(get("/messages")
@@ -64,9 +62,6 @@ class MessageControllerTest {
         //then
         result.andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(allMessages)))
-                .andExpect(jsonPath("$.*", hasSize(2)))
-                .andExpect(jsonPath("$.Alice.*", hasSize(2)))
-                .andExpect(jsonPath("$.Bob.*", hasSize(1)))
                 .andDo(print());
 
     }
