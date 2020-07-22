@@ -40,7 +40,6 @@ public class MessageControllerIntegrationTest {
     @Test
     public void sendMessage_CorrectMessage_StatusOk() throws Exception {
         //given
-        Message message = Message.builder().message("123").receiverId("Bob").build();
         String jsonBody = "{\"message\":\"123\",\"receiverId\":\"Bob\",\"senderId\":null}";
         //when
         ResultActions result = mvc.perform(post("/messages")
@@ -50,9 +49,9 @@ public class MessageControllerIntegrationTest {
         result.andExpect(status().isOk())
                 .andDo(print());
         assertThat(messageRepository.findAll().get(0).getMessage())
-                .isEqualTo(message.getMessage());
+                .isEqualTo("123");
         assertThat(messageRepository.findAll().get(0).getReceiverId())
-                .isEqualTo(message.getReceiverId());
+                .isEqualTo("Bob");
     }
 
     @Test
