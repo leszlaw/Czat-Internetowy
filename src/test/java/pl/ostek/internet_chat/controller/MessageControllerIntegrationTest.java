@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.ostek.internet_chat.InternetChatApplication;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql("/schema.sql")
 public class MessageControllerIntegrationTest {
 
     @Autowired
@@ -34,11 +36,6 @@ public class MessageControllerIntegrationTest {
 
     @Autowired
     private MessageRepository messageRepository;
-
-    @BeforeEach
-    public void initEach(){
-        messageRepository.deleteAll();
-    }
 
     @Test
     public void sendMessage_CorrectMessage_StatusOk() throws Exception {
@@ -59,17 +56,12 @@ public class MessageControllerIntegrationTest {
     }
 
     @Test
+    @Sql({"/schema.sql","/test-data.sql"})
     public void getAllMessages_ThreeMessages_ReturnJsonArray() throws Exception {
         //given
-        Message message1 = Message.builder().message("123").receiverId("Alice").build();
-        Message message2 = Message.builder().message("123").receiverId("Alice").build();
-        Message message3 = Message.builder().message("123").receiverId("Bob").build();
-        messageRepository.save(message1);
-        messageRepository.save(message2);
-        messageRepository.save(message3);
-        String expectedString = "[{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":null}," +
-                "{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":null}," +
-                "{\"message\":\"123\",\"receiverId\":\"Bob\",\"senderId\":null}]";
+        String expectedString = "[{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":\"Eva\"}," +
+                "{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":\"Bob\"}," +
+                "{\"message\":\"123\",\"receiverId\":\"Bob\",\"senderId\":\"Alice\"}]";
         //when
         ResultActions result = mvc.perform(get("/messages")
                 .contentType(MediaType.APPLICATION_JSON));
