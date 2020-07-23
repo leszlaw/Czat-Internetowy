@@ -9,12 +9,7 @@ import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.repository.MessageRepository;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 class MessageServiceTest {
 

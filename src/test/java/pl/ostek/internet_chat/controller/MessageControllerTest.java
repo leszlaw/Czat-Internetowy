@@ -12,11 +12,8 @@ import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.service.MessageService;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
