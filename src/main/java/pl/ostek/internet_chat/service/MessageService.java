@@ -23,14 +23,11 @@ public class MessageService {
             throw new BlankMessageException("ReceiverId should not be empty array or null!");
         if (isBlank(message.getMessage()))
             throw new BlankMessageException("Message string should not be empty array or null!");
-        String receiverId = message.getReceiverId();
-        if (messageRepository.get(receiverId) == null)
-            messageRepository.put(receiverId, new ArrayList<>());
-        messageRepository.get(receiverId).add(message);
+        messageRepository.save(message);
     }
 
-    public Map<String, List<Message>> getAllMessages() {
-        return Collections.unmodifiableMap(messageRepository);
+    public List<Message> getAllMessages() {
+        return messageRepository.findAll();
     }
 
 }

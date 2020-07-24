@@ -9,12 +9,7 @@ import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.repository.MessageRepository;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 class MessageServiceTest {
 
@@ -37,14 +32,11 @@ class MessageServiceTest {
     }, delimiter = ':')
     void sendMessage_MessageSent_ReceiverHasMesssage(String messageString, String receiverId) {
         //given
-        Message message = new Message(messageString, receiverId);
-        ArrayList<Message> messagesMock = mock(ArrayList.class);
-        given(messageRepository.get(receiverId)).willReturn(null,messagesMock);
+        Message message = Message.builder().message(messageString).receiverId(receiverId).build();
         //when
         messageService.sendMessage(message);
         //then
-        verify(messageRepository,times(2)).get(receiverId);
-        verify(messagesMock).add(message);
+        verify(messageRepository).save(message);
     }
 
     @ParameterizedTest(name = "Send \"{0}\" to Bob throws exception.")
@@ -52,7 +44,7 @@ class MessageServiceTest {
     @ValueSource(strings = {"  ", "\t", "\n"})
     void sendMessage_BlankMessageString_ExceptionThrown(String messageString){
         //given
-        Message message = new Message(messageString, "Bob");
+        Message message = Message.builder().message(messageString).receiverId("Bob").build();
         //expected
         assertThatThrownBy(() -> {
             messageService.sendMessage(message);
@@ -64,7 +56,7 @@ class MessageServiceTest {
     @ValueSource(strings = {"  ", "\t", "\n"})
     void sendMessage_BlankReceiverId_ExceptionThrown(String receiverId){
         //given
-        Message message = new Message("123", receiverId);
+        Message message = Message.builder().message("123").receiverId(receiverId).build();
         //expected
         assertThatThrownBy(() -> {
             messageService.sendMessage(message);
