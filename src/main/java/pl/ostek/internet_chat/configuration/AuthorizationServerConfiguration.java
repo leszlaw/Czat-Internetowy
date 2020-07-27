@@ -1,7 +1,6 @@
 package pl.ostek.internet_chat.configuration;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,7 +31,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         clients.inMemory()
                 .withClient("admin")
                 .secret(passwordEncoder.encode("admin"))
-                .scopes("read", "write", "lookinguptheweather")
+                .scopes("read", "write")
                 .authorizedGrantTypes("password");
     }
 
