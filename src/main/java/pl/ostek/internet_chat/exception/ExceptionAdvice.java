@@ -13,9 +13,16 @@ public class ExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler(BlankMessageException.class)
-    public ResponseEntity<Object> messageServiceExceptionHandler(BlankMessageException ex){
+    public ResponseEntity<Object> handleBlankMessageException(BlankMessageException ex){
         log.warn("Returning Http 400 Bad Request "+ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(SuchUserExistsException.class)
+    public ResponseEntity<Object> handleSuchUserExistsException(SuchUserExistsException ex){
+        log.warn("Returning Http 409 Conflict "+ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
 }
