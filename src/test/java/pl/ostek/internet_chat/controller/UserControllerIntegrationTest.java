@@ -14,6 +14,7 @@ import pl.ostek.internet_chat.repository.UserRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -43,6 +44,21 @@ public class UserControllerIntegrationTest {
                 .andDo(print());
 
         assertThat(userRepository.findByUsername("adam").getUsername()).isEqualTo("adam");
+    }
+
+    @Test
+    public void createUser_UsernameExists_ConflictMessageShown() throws Exception {
+        //given
+        String jsonBody = "{\"username\":\"admin\",\"password\":\"admin\"}";
+        //when
+        ResultActions result = mvc.perform(post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody));
+        //then
+        result.andExpect(status().isConflict())
+                .andExpect(content().string("User \"admin\""+" already exists!"))
+                .andDo(print());
+
     }
 
 }
