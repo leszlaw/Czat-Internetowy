@@ -25,4 +25,11 @@ public class ExceptionAdvice {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ResponseBody
+    @ExceptionHandler(ProfileExistsException.class)
+    public ResponseEntity<Object> handleProfileExistsException(ProfileExistsException ex){
+        log.warn("Returning Http 409 Conflict "+ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
 }

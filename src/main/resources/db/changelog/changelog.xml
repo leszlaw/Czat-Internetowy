@@ -6,5 +6,5 @@
     
     <include file="version/messages.xml" relativeToChangelogFile="true"/>
     <include file="version/users.xml" relativeToChangelogFile="true"/>
-    
+    <include file="version/profiles.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

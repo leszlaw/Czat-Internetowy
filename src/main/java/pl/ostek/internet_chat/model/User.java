@@ -23,7 +23,7 @@ import java.util.Collections;
 public class User implements UserDetails {
 
     @Id
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String username;
@@ -31,6 +31,11 @@ public class User implements UserDetails {
     private String password;
     @JsonIgnore
     private String role;
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade =  CascadeType.ALL,
+            mappedBy = "user")
+    private UserProfile userProfile;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
