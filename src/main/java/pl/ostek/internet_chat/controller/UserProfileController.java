@@ -23,9 +23,15 @@ public class UserProfileController {
     }
 
     @PutMapping
-    public void editProfile(@RequestBody UserProfile userProfile, Principal principal){
-        userProfileService.editProfile(userProfile,principal.getName());
-        log.info(userProfile.toString()+" action=editProfile status=successful");
+    public void saveProfile(@RequestBody UserProfile userProfile, Principal principal){
+        userProfileService.saveProfile(userProfile,principal.getName());
+        log.info(userProfile.toString()+" action=saveProfile status=successful");
+    }
+
+    @PatchMapping
+    public void editProfile(@RequestParam("description") String description,Principal principal){
+        userProfileService.editProfileDescription(description,principal.getName());
+        log.info("description = \""+description+"\" action=editProfile status=successful");
     }
 
 }
