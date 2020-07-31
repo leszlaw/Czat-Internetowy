@@ -20,28 +20,31 @@ public class UserProfileService {
 
     public void createProfile(UserProfile userProfile, String username) {
         checkIfProfileIsCorrect(userProfile);
-        User user = findUser(username);
+        User user=userRepository.findByUsername(username);
+        if(user==null)
+            throw new SuchUserDoesNotExistsException(username);
         if (user.getUserProfile() != null)
             throw new ProfileExistsException(user.getUserProfile());
         userProfile.setUser(user);
         userProfileRepository.save(userProfile);
     }
 
-    public void saveProfile(UserProfile userProfile, String username) {
+    public void updateProfile(UserProfile userProfile, String username) {
         checkIfProfileIsCorrect(userProfile);
-        User user=findUser(username);
-        UserProfile toEdit = user.getUserProfile();
-        if (toEdit == null)
-            throw new ProfileDoesNotExistsException(user);
+        UserProfile toEdit = getUserProfile(username);
         toEdit.setDescription(userProfile.getDescription());
+        toEdit.setGender(userProfile.getGender());
         userProfileRepository.save(toEdit);
     }
 
-    public void editProfileDescription(String description,String username) {
-        User user=findUser(username);
-        UserProfile userProfile=user.getUserProfile();
-        userProfile.setDescription(description);
-        userProfileRepository.save(userProfile);
+    public void partialUpdateProfile(UserProfile userProfile,String username) {
+        checkIfProfileIsCorrect(userProfile);
+        UserProfile toEdit = getUserProfile(username);
+        if(userProfile.getDescription()!=null)
+            toEdit.setDescription(userProfile.getDescription());
+        if(userProfile.getGender()!=null)
+            toEdit.setGender(userProfile.getGender());
+        userProfileRepository.save(toEdit);
     }
 
     private boolean stringLongerThan(int length, String string) {
@@ -55,11 +58,11 @@ public class UserProfileService {
             throw new InvalidProfileException("Description should be shorter than 256 characters!");
     }
 
-    public User findUser(String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null)
-            throw new SuchUserDoesNotExistsException(username);
-        return user;
+    public UserProfile getUserProfile(String username) {
+        UserProfile toEdit = userProfileRepository.findByUsername(username);
+        if (toEdit == null)
+            throw new ProfileDoesNotExistsException(username);
+        return toEdit;
     }
 
 }

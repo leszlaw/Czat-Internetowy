@@ -15,6 +15,7 @@ PRIMARY KEY (id));
 
 CREATE TABLE profiles (id VARCHAR(255) NOT NULL auto_increment UNIQUE,
 user_id VARCHAR(255) UNIQUE,
+gender VARCHAR(6),
 description VARCHAR(255),
 PRIMARY KEY (id),
 FOREIGN KEY (user_id) REFERENCES users(id));
