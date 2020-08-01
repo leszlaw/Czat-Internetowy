@@ -46,11 +46,11 @@ public class UserService implements UserDetailsService {
     public List<SimplifiedUser> findUsersThatBeginWith(String startUsername){
         if(startUsername==null)
             startUsername="";
-        List<SimplifiedUser> simpleContacts=new ArrayList<>();
+        List<SimplifiedUser> simplifiedUsers=new ArrayList<>();
         userRepository.selectValuesThatBeginWith(startUsername).stream().forEach((o)->{
-            simpleContacts.add(new SimplifiedUser((String)o[0],(String)o[1]));
+            simplifiedUsers.add(new SimplifiedUser((String)o[0],(String)o[1]));
         });
-        return simpleContacts;
+        return simplifiedUsers;
     }
 
 }

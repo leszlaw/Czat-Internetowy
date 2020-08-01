@@ -8,8 +8,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.ostek.internet_chat.exception.SuchUserExistsException;
+import pl.ostek.internet_chat.exception.UserNotFountException;
+import pl.ostek.internet_chat.model.SimplifiedUser;
 import pl.ostek.internet_chat.model.User;
 import pl.ostek.internet_chat.repository.UserRepository;
+
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -86,5 +90,63 @@ public class UserServiceTest {
                 .hasMessageContaining("User \""+user.getUsername()+"\""+" already exists!");
         verify(userRepository).existsByUsername("admin");
     }
+
+    @Test
+    void findUser_CorrectId_UserReturned(){
+        //given
+        User given=User.builder().id("1").username("admin").build();
+        given(userRepository.findById("1")).willReturn(Optional.of(given));
+        //when
+        User result=userService.findUser("1");
+        //then
+        assertThat(result).isEqualTo(given);
+    }
+
+    @Test
+    void findUser_WrongId_ExceptionThrown(){
+        //given
+        given(userRepository.findById("1")).willReturn(Optional.empty());
+        assertThatThrownBy(() -> {
+            userService.findUser("1");
+        }).isInstanceOf(UserNotFountException.class)
+                .hasMessageContaining("User with id=1 not found");
+        verify(userRepository).findById("1");
+    }
+
+    @Test
+    void findUsersThatBeginWith_CommonValues_ArrayReturned(){
+        //given
+        List<Object[]> values= Arrays.asList(new Object[]{"1","adam"},
+                new Object[]{"2","alice"});
+        given(userRepository.selectValuesThatBeginWith("a")).willReturn(values);
+        //when
+        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith("a");
+        //then
+        assertThat(simplifiedUsers.get(0).getUserId()).isEqualTo("1");
+        assertThat(simplifiedUsers.get(0).getUsername()).isEqualTo("adam");
+        assertThat(simplifiedUsers.get(1).getUserId()).isEqualTo("2");
+        assertThat(simplifiedUsers.get(1).getUsername()).isEqualTo("alice");
+        assertThat(simplifiedUsers).hasSize(2);
+        verify(userRepository).selectValuesThatBeginWith("a");
+    }
+
+    @Test
+    void findUsersThatBeginWith_NullSource_ArrayReturned(){
+        //given
+        List<Object[]> values= Arrays.asList(new Object[]{"1","adam"},
+                new Object[]{"2","alice"});
+        given(userRepository.selectValuesThatBeginWith("")).willReturn(values);
+        //when
+        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith(null);
+        //then
+        assertThat(simplifiedUsers.get(0).getUserId()).isEqualTo("1");
+        assertThat(simplifiedUsers.get(0).getUsername()).isEqualTo("adam");
+        assertThat(simplifiedUsers.get(1).getUserId()).isEqualTo("2");
+        assertThat(simplifiedUsers.get(1).getUsername()).isEqualTo("alice");
+        assertThat(simplifiedUsers).hasSize(2);
+        verify(userRepository).selectValuesThatBeginWith("");
+    }
+
+
 
 }
