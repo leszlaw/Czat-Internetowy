@@ -12,17 +12,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ExceptionAdvice {
 
     @ResponseBody
-    @ExceptionHandler(BlankMessageException.class)
-    public ResponseEntity<Object> handleBlankMessageException(BlankMessageException ex){
+    @ExceptionHandler({BlankMessageException.class,InvalidProfileException.class})
+    public ResponseEntity<Object> handleBadRequestError(RuntimeException ex){
         log.warn("Returning Http 400 Bad Request "+ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ResponseBody
-    @ExceptionHandler(SuchUserExistsException.class)
-    public ResponseEntity<Object> handleSuchUserExistsException(SuchUserExistsException ex){
+    @ExceptionHandler({SuchUserExistsException.class,ProfileExistsException.class})
+    public ResponseEntity<Object> handleConflictError(RuntimeException ex){
         log.warn("Returning Http 409 Conflict "+ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(ProfileDoesNotExistsException.class)
+    public ResponseEntity<Object> handleNotFoundError(RuntimeException ex){
+        log.warn("Returning Http 404 Not found "+ex);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
 }

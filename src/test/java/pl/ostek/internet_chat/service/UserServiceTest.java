@@ -33,7 +33,7 @@ public class UserServiceTest {
     @Test
     void loadByUserName_CorrectUsername_ReturnUser() {
         //given
-        User expectedUser=new User("1","admin","admin","admin");
+        User expectedUser=new User("1","admin","admin","admin",null);
         given(userRepository.findByUsername("admin"))
                 .willReturn(expectedUser);
         //when
