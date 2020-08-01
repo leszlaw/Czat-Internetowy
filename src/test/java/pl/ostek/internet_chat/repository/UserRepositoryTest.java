@@ -1,6 +1,8 @@
 package pl.ostek.internet_chat.repository;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -35,5 +37,17 @@ public class UserRepositoryTest {
         assertThat(userRepository.existsByUsername("adam")).isFalse();
     }
 
+    @ParameterizedTest(name = "Select values that username start with \"{0}\" returned {1} {2}.")
+    @CsvSource(value = {"a,1,admin", "u,2,user"})
+    public void selectValuesThatBeginWith_StartsWithChar_ReturnValues(String startUsername,String id,String username) {
+        assertThat(userRepository
+                .selectValuesThatBeginWith(startUsername).get(0)).isEqualTo(new Object[]{id,username});
+    }
 
-}
+    @Test
+    public void selectValuesThatBeginWith_EmptySource_ReturnAll() {
+        assertThat(userRepository
+                .selectValuesThatBeginWith("")).hasSize(2);
+    }
+
+    }

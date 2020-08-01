@@ -36,7 +36,7 @@ public class UserControllerIntegrationTest {
         //given
         String jsonBody = "{\"username\":\"adam\",\"password\":\"malysz\"}";
         //when
-        ResultActions result = mvc.perform(post("/users")
+        ResultActions result = mvc.perform(post("/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody));
         //then
@@ -51,7 +51,7 @@ public class UserControllerIntegrationTest {
         //given
         String jsonBody = "{\"username\":\"admin\",\"password\":\"admin\"}";
         //when
-        ResultActions result = mvc.perform(post("/users")
+        ResultActions result = mvc.perform(post("/users/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody));
         //then
