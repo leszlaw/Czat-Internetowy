@@ -21,7 +21,7 @@ public class ExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler({SuchUserExistsException.class, ProfileExistsException.class,
-    SuchContactExistsException.class})
+    SuchContactExistsException.class,ContactWithYourselfException.class})
     public ResponseEntity<Object> handleConflictError(RuntimeException ex) {
         log.warn("Returning Http 409 Conflict " + ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);

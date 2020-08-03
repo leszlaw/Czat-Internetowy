@@ -21,14 +21,14 @@ public class ContactController {
     @PostMapping
     public void addContact(@RequestParam String id, Principal principal) {
         contactService.addContactById(id, principal.getName());
-        log.info(principal.getName() + "added a contact with userId=" + id + " action=addContact status=successful");
+        log.info(principal.getName() + " added a contact with userId=" + id + " action=addContact status=successful");
     }
 
 
     @GetMapping
     public List<SimplifiedUser> getContacts(Principal principal) {
         val simplifiedUsers = contactService.getContacts(principal.getName());
-        log.info(principal.getName() + "gets all contacts action=getContacts status=successful");
+        log.info(principal.getName() + " gets all contacts action=getContacts status=successful");
         return simplifiedUsers;
     }
 

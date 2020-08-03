@@ -2,6 +2,7 @@ package pl.ostek.internet_chat.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.ostek.internet_chat.exception.ContactWithYourselfException;
 import pl.ostek.internet_chat.exception.SuchContactExistsException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.Contact;
@@ -79,6 +80,17 @@ public class ContactServiceTest {
             contactService.addContactById("2","admin");
         }).isInstanceOf(SuchContactExistsException.class)
                 .hasMessageContaining("Contact to user with id=2 exists!");
+    }
+    @Test
+    void addContactById_ContactWithYourself_ExceptionThrown(){
+        //given
+        given(userRepository.existsByUsername("admin")).willReturn(true);
+        given(userRepository.findByUsername("admin")).willReturn(User.builder().id("1").build());
+        given(userRepository.existsById("1")).willReturn(true);
+        assertThatThrownBy(() -> {
+            contactService.addContactById("1","admin");
+        }).isInstanceOf(ContactWithYourselfException.class)
+                .hasMessageContaining("You cannot add yourself to contacts!");
     }
 
     @Test

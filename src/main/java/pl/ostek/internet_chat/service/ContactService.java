@@ -2,6 +2,7 @@ package pl.ostek.internet_chat.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.ostek.internet_chat.exception.ContactWithYourselfException;
 import pl.ostek.internet_chat.exception.SuchContactExistsException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.Contact;
@@ -25,6 +26,8 @@ public class ContactService {
         if(!userRepository.existsById(userId))
             throw new UserNotFoundException("User with id="+userId+" not found");
         String ownerId=userRepository.findByUsername(ownerUsername).getId();
+        if(ownerId==userId)
+            throw new ContactWithYourselfException();
         if(!contactRepository.existsByOwnerIdAndUserId(ownerId,userId)){
             Contact contact=Contact.builder()
                     .ownerId(ownerId)
