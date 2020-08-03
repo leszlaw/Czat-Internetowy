@@ -4,9 +4,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.provider.CsvSource;
-import pl.ostek.internet_chat.converter.NullConverter;
 import pl.ostek.internet_chat.exception.InvalidProfileException;
 import pl.ostek.internet_chat.exception.ProfileDoesNotExistsException;
 import pl.ostek.internet_chat.exception.ProfileExistsException;
@@ -94,13 +92,9 @@ public class UserProfileServiceTest {
 
     @ParameterizedTest(name = "Set gender={0} and description={1} was successful.")
     @CsvSource(value = {
-            "MALE,aaa123",
-            "null,@#$~",
-            "FEMALE,null",
+            "MALE,aaa123", ",@#$~", "FEMALE,",
     })
-    void partialUpdateProfile_UserHasProfile_ProfileSaved(
-            @ConvertWith(NullConverter.class) Gender gender,
-            @ConvertWith(NullConverter.class) String description) {
+    void partialUpdateProfile_UserHasProfile_ProfileSaved(Gender gender, String description) {
         //given
         User user = User.builder().username("adam").build();
         UserProfile oldProfile = UserProfile.builder().user(user).gender(Gender.MALE).description("old").build();

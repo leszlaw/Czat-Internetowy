@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private String username;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    private String email;
     @JsonIgnore
     private String role;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

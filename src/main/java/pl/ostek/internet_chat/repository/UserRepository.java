@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User,String> {
 
     public User findByUsername(String userName);
     public boolean existsByUsername(String username);
-    @Query("select id ,username from User where username like ?1%")
-    public List<Object[]> selectValuesThatBeginWith(String startUsername);
+    @Query("select id,username,email from User where username like ?1% and email like ?2%")
+    public List<Object[]> selectValuesThatBeginWith(String startUsername,String email);
 
 }

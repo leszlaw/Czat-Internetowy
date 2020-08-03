@@ -37,17 +37,12 @@ public class UserRepositoryTest {
         assertThat(userRepository.existsByUsername("adam")).isFalse();
     }
 
-    @ParameterizedTest(name = "Select values that username start with \"{0}\" returned {1} {2}.")
-    @CsvSource(value = {"a,1,admin", "u,2,user"})
-    public void selectValuesThatBeginWith_StartsWithChar_ReturnValues(String startUsername,String id,String username) {
-        assertThat(userRepository
-                .selectValuesThatBeginWith(startUsername).get(0)).isEqualTo(new Object[]{id,username});
-    }
-
-    @Test
-    public void selectValuesThatBeginWith_EmptySource_ReturnAll() {
-        assertThat(userRepository
-                .selectValuesThatBeginWith("")).hasSize(2);
+    @ParameterizedTest(name = "Select values that username start with \"{0}\" and email " +
+            "start with {1} returned {2} objects.")
+    @CsvSource(value = {"a,a,2","u,u,1","b,B,1"})
+    public void selectValuesThatBeginWith_StartsWithChar_ReturnValues(String startUsername
+            ,String startEmail, int size) {
+        assertThat(userRepository.selectValuesThatBeginWith(startUsername,startEmail)).hasSize(size);
     }
 
     }

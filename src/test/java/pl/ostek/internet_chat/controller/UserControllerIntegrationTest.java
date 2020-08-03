@@ -68,6 +68,7 @@ public class UserControllerIntegrationTest {
     public void findUser_UserExists_UserReturned() throws Exception {
         //given
         String expectedJsonBody = "{\"id\":\"1\",\"username\":\"admin\"," +
+                "\"email\":\"admin@office.pl\"," +
                 "\"userProfile\":{\"gender\":\"FEMALE\",\"description\":\"I am admin\"}}";
         //when
         ResultActions result = mvc.perform(get("/users/1")
@@ -82,17 +83,18 @@ public class UserControllerIntegrationTest {
     @Test
     public void findUser_UserNotExist_NotFoundMessageShown() throws Exception {
         //when
-        ResultActions result = mvc.perform(get("/users/3")
+        ResultActions result = mvc.perform(get("/users/5")
                 .contentType(MediaType.APPLICATION_JSON));
         //then
         result.andExpect(status().isNotFound())
-                .andExpect(content().string("User with id=3 not found"))
+                .andExpect(content().string("User with id=5 not found"))
                 .andDo(print());
     }
 
     @Test
     public void findUsers_UserStartsWithA_UserReturned() throws Exception {
-        String expectedJsonBody = "[{\"userId\":\"1\",\"username\":\"admin\"}]";
+        String expectedJsonBody = "[{\"userId\":\"1\",\"username\":\"admin\",\"email\":\"admin@office.pl\"}" +
+                ",{\"userId\":\"3\",\"username\":\"alice\",\"email\":\"alice@office.pl\"}]";
         //when
         ResultActions result = mvc.perform(get("/users?username=a")
                 .contentType(MediaType.APPLICATION_JSON));
@@ -100,7 +102,7 @@ public class UserControllerIntegrationTest {
         result.andExpect(status().isOk())
                 .andExpect(content().string(expectedJsonBody))
                 .andExpect(content().string(objectMapper
-                        .writeValueAsString(Arrays.asList(new SimplifiedUser("1", "admin")))))
+                        .writeValueAsString(Arrays.asList(new SimplifiedUser("1", "admin","admin@office.pl"),new SimplifiedUser("3", "alice","alice@office.pl")))))
                 .andDo(print());
     }
 

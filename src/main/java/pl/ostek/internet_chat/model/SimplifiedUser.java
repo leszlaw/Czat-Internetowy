@@ -13,5 +13,6 @@ public class SimplifiedUser {
 
     private String userId;
     private String username;
+    private String email;
 
 }

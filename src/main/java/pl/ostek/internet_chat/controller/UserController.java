@@ -18,19 +18,20 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public void createUser(@RequestBody User user){
+    public void createUser(@RequestBody User user) {
         userService.createUser(user);
-        log.info(user.toString()+" action=createUser status=successful");
+        log.info(user.toString() + " action=createUser status=successful");
     }
 
     @GetMapping("/{id}")
-    public User findUser(@PathVariable(name = "id") String id){
+    public User findUser(@PathVariable(name = "id") String id) {
         return userService.findUser(id);
     }
 
     @GetMapping
-    public List<SimplifiedUser> findUsers(@RequestParam(required = false) String username){
-        return userService.findUsersThatBeginWith(username);
+    public List<SimplifiedUser> findUsers(@RequestParam(required = false) String username,
+                                          @RequestParam(required = false) String email) {
+        return userService.findUsersThatBeginWith(username,email);
     }
 
 }

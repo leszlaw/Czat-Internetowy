@@ -43,12 +43,14 @@ public class UserService implements UserDetailsService {
                 ()->{throw new UserNotFountException("User with id="+id+" not found");});
     }
 
-    public List<SimplifiedUser> findUsersThatBeginWith(String startUsername){
+    public List<SimplifiedUser> findUsersThatBeginWith(String startUsername,String email){
         if(startUsername==null)
             startUsername="";
+        if(email==null)
+            email="";
         List<SimplifiedUser> simplifiedUsers=new ArrayList<>();
-        userRepository.selectValuesThatBeginWith(startUsername).stream().forEach((o)->{
-            simplifiedUsers.add(new SimplifiedUser((String)o[0],(String)o[1]));
+        userRepository.selectValuesThatBeginWith(startUsername,email).stream().forEach((o)->{
+            simplifiedUsers.add(new SimplifiedUser((String)o[0],(String)o[1], (String)o[2]));
         });
         return simplifiedUsers;
     }

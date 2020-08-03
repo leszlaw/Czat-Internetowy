@@ -37,7 +37,7 @@ public class UserServiceTest {
     @Test
     void loadByUserName_CorrectUsername_ReturnUser() {
         //given
-        User expectedUser=new User("1","admin","admin","admin",null);
+        User expectedUser=new User("1","admin","admin","admin","admin",null);
         given(userRepository.findByUsername("admin"))
                 .willReturn(expectedUser);
         //when
@@ -116,37 +116,37 @@ public class UserServiceTest {
     @Test
     void findUsersThatBeginWith_CommonValues_ArrayReturned(){
         //given
-        List<Object[]> values= Arrays.asList(new Object[]{"1","adam"},
-                new Object[]{"2","alice"});
-        given(userRepository.selectValuesThatBeginWith("a")).willReturn(values);
+        Object[] adam=new Object[]{"1","adam","adam@office.pl"};
+        Object[] alice=new Object[]{"2","alice","alice@office.pl"};
+        List<Object[]> values= Arrays.asList(adam, alice);
+        given(userRepository.selectValuesThatBeginWith("a","a")).willReturn(values);
         //when
-        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith("a");
+        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith("a","a");
         //then
-        assertThat(simplifiedUsers.get(0).getUserId()).isEqualTo("1");
-        assertThat(simplifiedUsers.get(0).getUsername()).isEqualTo("adam");
-        assertThat(simplifiedUsers.get(1).getUserId()).isEqualTo("2");
-        assertThat(simplifiedUsers.get(1).getUsername()).isEqualTo("alice");
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(0))).isEqualTo(adam);
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(1))).isEqualTo(alice);
         assertThat(simplifiedUsers).hasSize(2);
-        verify(userRepository).selectValuesThatBeginWith("a");
+        verify(userRepository).selectValuesThatBeginWith("a","a");
     }
 
     @Test
     void findUsersThatBeginWith_NullSource_ArrayReturned(){
         //given
-        List<Object[]> values= Arrays.asList(new Object[]{"1","adam"},
-                new Object[]{"2","alice"});
-        given(userRepository.selectValuesThatBeginWith("")).willReturn(values);
+        Object[] adam=new Object[]{"1","adam","adam@office.pl"};
+        Object[] alice=new Object[]{"2","alice","alice@office.pl"};
+        List<Object[]> values= Arrays.asList(adam, alice);
+        given(userRepository.selectValuesThatBeginWith("","")).willReturn(values);
         //when
-        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith(null);
+        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith(null,null);
         //then
-        assertThat(simplifiedUsers.get(0).getUserId()).isEqualTo("1");
-        assertThat(simplifiedUsers.get(0).getUsername()).isEqualTo("adam");
-        assertThat(simplifiedUsers.get(1).getUserId()).isEqualTo("2");
-        assertThat(simplifiedUsers.get(1).getUsername()).isEqualTo("alice");
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(0))).isEqualTo(adam);
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(1))).isEqualTo(alice);
         assertThat(simplifiedUsers).hasSize(2);
-        verify(userRepository).selectValuesThatBeginWith("");
+        verify(userRepository).selectValuesThatBeginWith("","");
     }
 
-
+    private Object[] simplifiedUserToArray(SimplifiedUser simplifiedUser){
+        return new Object[]{simplifiedUser.getUserId(),simplifiedUser.getUsername(),simplifiedUser.getEmail()};
+    }
 
 }
