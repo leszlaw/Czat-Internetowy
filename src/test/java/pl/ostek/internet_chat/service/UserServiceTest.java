@@ -8,8 +8,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.ostek.internet_chat.exception.SuchUserExistsException;
+import pl.ostek.internet_chat.exception.UserNotFountException;
+import pl.ostek.internet_chat.model.SimplifiedUser;
 import pl.ostek.internet_chat.model.User;
 import pl.ostek.internet_chat.repository.UserRepository;
+
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -33,7 +37,7 @@ public class UserServiceTest {
     @Test
     void loadByUserName_CorrectUsername_ReturnUser() {
         //given
-        User expectedUser=new User("1","admin","admin","admin",null);
+        User expectedUser=new User("1","admin","admin","admin","admin",null);
         given(userRepository.findByUsername("admin"))
                 .willReturn(expectedUser);
         //when
@@ -85,6 +89,64 @@ public class UserServiceTest {
         }).isInstanceOf(SuchUserExistsException.class)
                 .hasMessageContaining("User \""+user.getUsername()+"\""+" already exists!");
         verify(userRepository).existsByUsername("admin");
+    }
+
+    @Test
+    void findUser_CorrectId_UserReturned(){
+        //given
+        User given=User.builder().id("1").username("admin").build();
+        given(userRepository.findById("1")).willReturn(Optional.of(given));
+        //when
+        User result=userService.findUser("1");
+        //then
+        assertThat(result).isEqualTo(given);
+    }
+
+    @Test
+    void findUser_WrongId_ExceptionThrown(){
+        //given
+        given(userRepository.findById("1")).willReturn(Optional.empty());
+        assertThatThrownBy(() -> {
+            userService.findUser("1");
+        }).isInstanceOf(UserNotFountException.class)
+                .hasMessageContaining("User with id=1 not found");
+        verify(userRepository).findById("1");
+    }
+
+    @Test
+    void findUsersThatBeginWith_CommonValues_ArrayReturned(){
+        //given
+        Object[] adam=new Object[]{"1","adam","adam@office.pl"};
+        Object[] alice=new Object[]{"2","alice","alice@office.pl"};
+        List<Object[]> values= Arrays.asList(adam, alice);
+        given(userRepository.selectValuesThatBeginWith("a","a")).willReturn(values);
+        //when
+        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith("a","a");
+        //then
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(0))).isEqualTo(adam);
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(1))).isEqualTo(alice);
+        assertThat(simplifiedUsers).hasSize(2);
+        verify(userRepository).selectValuesThatBeginWith("a","a");
+    }
+
+    @Test
+    void findUsersThatBeginWith_NullSource_ArrayReturned(){
+        //given
+        Object[] adam=new Object[]{"1","adam","adam@office.pl"};
+        Object[] alice=new Object[]{"2","alice","alice@office.pl"};
+        List<Object[]> values= Arrays.asList(adam, alice);
+        given(userRepository.selectValuesThatBeginWith("","")).willReturn(values);
+        //when
+        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith(null,null);
+        //then
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(0))).isEqualTo(adam);
+        assertThat(simplifiedUserToArray(simplifiedUsers.get(1))).isEqualTo(alice);
+        assertThat(simplifiedUsers).hasSize(2);
+        verify(userRepository).selectValuesThatBeginWith("","");
+    }
+
+    private Object[] simplifiedUserToArray(SimplifiedUser simplifiedUser){
+        return new Object[]{simplifiedUser.getUserId(),simplifiedUser.getUsername(),simplifiedUser.getEmail()};
     }
 
 }

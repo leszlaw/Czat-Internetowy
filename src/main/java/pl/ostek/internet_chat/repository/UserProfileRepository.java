@@ -8,6 +8,6 @@ import pl.ostek.internet_chat.model.UserProfile;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile,String> {
     public UserProfile findByUser_Id(String userId);
-    @Query("Select p from UserProfile p left join User u on p.user=u.id where u.username = ?1")
+    @Query("select p from UserProfile p left join User u on p.user=u.id where u.username = ?1")
     public UserProfile findByUsername(String username);
 }

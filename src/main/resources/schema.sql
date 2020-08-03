@@ -10,6 +10,7 @@ PRIMARY KEY (id));
 CREATE TABLE users (id VARCHAR(255) NOT NULL auto_increment UNIQUE,
 username VARCHAR(255) UNIQUE,
 password VARCHAR(255),
+email VARCHAR(255),
 role VARCHAR(255),
 PRIMARY KEY (id));
 
