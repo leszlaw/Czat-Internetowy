@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.ostek.internet_chat.exception.SuchUserExistsException;
-import pl.ostek.internet_chat.exception.UserNotFountException;
+import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.SimplifiedUser;
 import pl.ostek.internet_chat.model.User;
 import pl.ostek.internet_chat.repository.UserRepository;
@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
 
     public User findUser(String id){
         return userRepository.findById(id).orElseThrow(
-                ()->{throw new UserNotFountException("User with id="+id+" not found");});
+                ()->{throw new UserNotFoundException("User with id="+id+" not found");});
     }
 
     public List<SimplifiedUser> findUsersThatBeginWith(String startUsername,String email){

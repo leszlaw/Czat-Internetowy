@@ -20,14 +20,15 @@ public class ExceptionAdvice {
     }
 
     @ResponseBody
-    @ExceptionHandler({SuchUserExistsException.class, ProfileExistsException.class})
+    @ExceptionHandler({SuchUserExistsException.class, ProfileExistsException.class,
+    SuchContactExistsException.class})
     public ResponseEntity<Object> handleConflictError(RuntimeException ex) {
         log.warn("Returning Http 409 Conflict " + ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ResponseBody
-    @ExceptionHandler({ProfileDoesNotExistsException.class, UserNotFountException.class,
+    @ExceptionHandler({ProfileDoesNotExistsException.class, UserNotFoundException.class,
             UsernameNotFoundException.class})
     public ResponseEntity<Object> handleNotFoundError(RuntimeException ex) {
         log.warn("Returning Http 404 Not found " + ex);

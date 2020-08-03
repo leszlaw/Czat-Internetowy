@@ -8,7 +8,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.ostek.internet_chat.exception.SuchUserExistsException;
-import pl.ostek.internet_chat.exception.UserNotFountException;
+import pl.ostek.internet_chat.exception.UserNotFoundException;
+import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.SimplifiedUser;
 import pl.ostek.internet_chat.model.User;
 import pl.ostek.internet_chat.repository.UserRepository;
@@ -108,7 +109,7 @@ public class UserServiceTest {
         given(userRepository.findById("1")).willReturn(Optional.empty());
         assertThatThrownBy(() -> {
             userService.findUser("1");
-        }).isInstanceOf(UserNotFountException.class)
+        }).isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User with id=1 not found");
         verify(userRepository).findById("1");
     }

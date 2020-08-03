@@ -9,3 +9,8 @@ INSERT INTO users (username,password,email,role) VALUES ('bob','$2y$10$UIzmVccvE
 
 INSERT INTO profiles (user_id,gender,description) VALUES ('1','FEMALE','I am admin');
 INSERT INTO profiles (user_id,gender,description) VALUES ('2','MALE','I am user');
+
+INSERT INTO contacts (owner_id,user_id) VALUES ('1','2');
+INSERT INTO contacts (owner_id,user_id) VALUES ('2','1');
+INSERT INTO contacts (owner_id,user_id) VALUES ('1','3');
+INSERT INTO contacts (owner_id,user_id) VALUES ('1','4');
