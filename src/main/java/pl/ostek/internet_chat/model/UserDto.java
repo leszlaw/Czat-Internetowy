@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SimplifiedUser {
+public class UserDto {
 
-    private String userId;
+    private String id;
     private String username;
     private String email;
 

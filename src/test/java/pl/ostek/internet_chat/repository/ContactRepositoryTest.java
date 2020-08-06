@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
+import pl.ostek.internet_chat.model.UserDto;
 
 import java.util.List;
 
@@ -21,15 +22,15 @@ public class ContactRepositoryTest {
     @Test
     public void selectValuesOfUsersByContactsOwner_UsernameAdmin_ReturnArray(){
         //given
-        Object[] o1=new Object[]{"2","user","user@office.pl"};
-        Object[] o2=new Object[]{"3","alice","alice@office.pl"};
-        Object[] o3=new Object[]{"4","bob","Bob@office.pl"};
+        UserDto u1=new UserDto("2","user","user@office.pl");
+        UserDto u2=new UserDto("3","alice","alice@office.pl");
+        UserDto u3=new UserDto("4","bob","Bob@office.pl");
         //when
-        List<Object[]> values=contactRepository.selectValuesOfUsersByContactsOwner("admin");
+        List<UserDto> values=contactRepository.selectUserDtoListByContactsOwner("admin");
         //then
-        assertThat(values.get(0)).isEqualTo(o1);
-        assertThat(values.get(1)).isEqualTo(o2);
-        assertThat(values.get(2)).isEqualTo(o3);
+        assertThat(values.get(0)).isEqualTo(u1);
+        assertThat(values.get(1)).isEqualTo(u2);
+        assertThat(values.get(2)).isEqualTo(u3);
         assertThat(values).hasSize(3);
     }
 

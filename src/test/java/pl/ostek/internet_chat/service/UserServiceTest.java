@@ -9,8 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.ostek.internet_chat.exception.SuchUserExistsException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
-import pl.ostek.internet_chat.exception.UserNotFoundException;
-import pl.ostek.internet_chat.model.SimplifiedUser;
+import pl.ostek.internet_chat.model.UserDto;
 import pl.ostek.internet_chat.model.User;
 import pl.ostek.internet_chat.repository.UserRepository;
 
@@ -122,11 +121,11 @@ public class UserServiceTest {
         List<Object[]> values= Arrays.asList(adam, alice);
         given(userRepository.selectValuesThatBeginWith("a","a")).willReturn(values);
         //when
-        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith("a","a");
+        List<UserDto> userDtos =userService.findUsersThatBeginWith("a","a");
         //then
-        assertThat(simplifiedUserToArray(simplifiedUsers.get(0))).isEqualTo(adam);
-        assertThat(simplifiedUserToArray(simplifiedUsers.get(1))).isEqualTo(alice);
-        assertThat(simplifiedUsers).hasSize(2);
+        assertThat(simplifiedUserToArray(userDtos.get(0))).isEqualTo(adam);
+        assertThat(simplifiedUserToArray(userDtos.get(1))).isEqualTo(alice);
+        assertThat(userDtos).hasSize(2);
         verify(userRepository).selectValuesThatBeginWith("a","a");
     }
 
@@ -138,16 +137,16 @@ public class UserServiceTest {
         List<Object[]> values= Arrays.asList(adam, alice);
         given(userRepository.selectValuesThatBeginWith("","")).willReturn(values);
         //when
-        List<SimplifiedUser> simplifiedUsers=userService.findUsersThatBeginWith(null,null);
+        List<UserDto> userDtos =userService.findUsersThatBeginWith(null,null);
         //then
-        assertThat(simplifiedUserToArray(simplifiedUsers.get(0))).isEqualTo(adam);
-        assertThat(simplifiedUserToArray(simplifiedUsers.get(1))).isEqualTo(alice);
-        assertThat(simplifiedUsers).hasSize(2);
+        assertThat(simplifiedUserToArray(userDtos.get(0))).isEqualTo(adam);
+        assertThat(simplifiedUserToArray(userDtos.get(1))).isEqualTo(alice);
+        assertThat(userDtos).hasSize(2);
         verify(userRepository).selectValuesThatBeginWith("","");
     }
 
-    private Object[] simplifiedUserToArray(SimplifiedUser simplifiedUser){
-        return new Object[]{simplifiedUser.getUserId(),simplifiedUser.getUsername(),simplifiedUser.getEmail()};
+    private Object[] simplifiedUserToArray(UserDto userDto){
+        return new Object[]{userDto.getId(), userDto.getUsername(), userDto.getEmail()};
     }
 
 }

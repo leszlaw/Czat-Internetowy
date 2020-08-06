@@ -17,8 +17,6 @@ public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
-    @Column(name = "owner_id")
     private String ownerId;
-    @Column(name = "user_id")
     private String userId;
 }

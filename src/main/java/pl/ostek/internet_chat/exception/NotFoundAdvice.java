@@ -10,22 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
 @ControllerAdvice
-public class ExceptionAdvice {
-
-    @ResponseBody
-    @ExceptionHandler({BlankMessageException.class, InvalidProfileException.class})
-    public ResponseEntity<Object> handleBadRequestError(RuntimeException ex) {
-        log.warn("Returning Http 400 Bad Request " + ex);
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ResponseBody
-    @ExceptionHandler({SuchUserExistsException.class, ProfileExistsException.class,
-    SuchContactExistsException.class,ContactWithYourselfException.class})
-    public ResponseEntity<Object> handleConflictError(RuntimeException ex) {
-        log.warn("Returning Http 409 Conflict " + ex);
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
-    }
+public class NotFoundAdvice {
 
     @ResponseBody
     @ExceptionHandler({ProfileDoesNotExistsException.class, UserNotFoundException.class,
