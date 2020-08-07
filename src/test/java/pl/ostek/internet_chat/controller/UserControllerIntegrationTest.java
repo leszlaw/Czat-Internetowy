@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import pl.ostek.internet_chat.model.SimplifiedUser;
+import pl.ostek.internet_chat.model.UserDto;
 import pl.ostek.internet_chat.repository.UserRepository;
 
 import java.util.Arrays;
@@ -93,8 +93,8 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void findUsers_UserStartsWithA_UserReturned() throws Exception {
-        String expectedJsonBody = "[{\"userId\":\"1\",\"username\":\"admin\",\"email\":\"admin@office.pl\"}" +
-                ",{\"userId\":\"3\",\"username\":\"alice\",\"email\":\"alice@office.pl\"}]";
+        String expectedJsonBody = "[{\"id\":\"1\",\"username\":\"admin\",\"email\":\"admin@office.pl\"}" +
+                ",{\"id\":\"3\",\"username\":\"alice\",\"email\":\"alice@office.pl\"}]";
         //when
         ResultActions result = mvc.perform(get("/users?username=a")
                 .contentType(MediaType.APPLICATION_JSON));
@@ -102,7 +102,7 @@ public class UserControllerIntegrationTest {
         result.andExpect(status().isOk())
                 .andExpect(content().string(expectedJsonBody))
                 .andExpect(content().string(objectMapper
-                        .writeValueAsString(Arrays.asList(new SimplifiedUser("1", "admin","admin@office.pl"),new SimplifiedUser("3", "alice","alice@office.pl")))))
+                        .writeValueAsString(Arrays.asList(new UserDto("1", "admin","admin@office.pl"),new UserDto("3", "alice","alice@office.pl")))))
                 .andDo(print());
     }
 

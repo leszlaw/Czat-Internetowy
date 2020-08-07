@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS profiles;
+DROP TABLE IF EXISTS contacts;
 DROP TABLE IF EXISTS users;
 CREATE TABLE messages (id VARCHAR(255) NOT NULL auto_increment UNIQUE,
 message VARCHAR(255),
@@ -19,4 +20,11 @@ user_id VARCHAR(255) UNIQUE,
 gender VARCHAR(6),
 description VARCHAR(255),
 PRIMARY KEY (id),
+FOREIGN KEY (user_id) REFERENCES users(id));
+
+CREATE TABLE contacts (id VARCHAR(255) NOT NULL auto_increment UNIQUE,
+owner_id VARCHAR(255),
+user_id VARCHAR(255),
+PRIMARY KEY (id),
+FOREIGN KEY (owner_id) REFERENCES users(id),
 FOREIGN KEY (user_id) REFERENCES users(id));
