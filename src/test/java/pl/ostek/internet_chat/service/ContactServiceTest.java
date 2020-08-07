@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.ostek.internet_chat.exception.ContactWithYourselfException;
-import pl.ostek.internet_chat.exception.SuchContactExistsException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.Contact;
 import pl.ostek.internet_chat.model.UserDto;

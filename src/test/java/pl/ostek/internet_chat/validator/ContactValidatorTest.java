@@ -5,8 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.ostek.internet_chat.exception.ContactWithYourselfException;
-import pl.ostek.internet_chat.exception.SuchContactExistsException;
+import pl.ostek.internet_chat.exception.IncorrectContactException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.Contact;
 import pl.ostek.internet_chat.repository.ContactRepository;
@@ -54,10 +53,11 @@ class ContactValidatorTest {
     void validate_OwnerIdEqualsUserId_ExceptionThrown(){
         //given
         Contact contact=new Contact("1","1","1");
+        given(userRepository.existsById("1")).willReturn(true);
         //expected
         assertThatThrownBy(() -> {
             contactValidator.validate(contact);
-        }).isInstanceOf(ContactWithYourselfException.class)
+        }).isInstanceOf(IncorrectContactException.class)
                 .hasMessageContaining("You cannot add yourself to contacts!");
     }
 
@@ -71,7 +71,7 @@ class ContactValidatorTest {
         //expected
         assertThatThrownBy(() -> {
             contactValidator.validate(contact);
-        }).isInstanceOf(SuchContactExistsException.class)
+        }).isInstanceOf(IncorrectContactException.class)
                 .hasMessageContaining("Contact to user with id=2 exists!");
     }
 }

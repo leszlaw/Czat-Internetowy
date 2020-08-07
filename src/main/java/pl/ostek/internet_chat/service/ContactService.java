@@ -20,8 +20,7 @@ public class ContactService {
     private final ContactValidator contactValidator;
 
     public void addContactById(String userId,String ownerUsername){
-        if(!userRepository.existsByUsername(ownerUsername))
-            throw new UserNotFoundException("User with username="+ownerUsername+" not found");
+        throwExceptionIfUserNotFound(ownerUsername);
         String ownerId=userRepository.findByUsername(ownerUsername).getId();
         Contact contact=Contact.builder()
                 .ownerId(ownerId)
@@ -30,9 +29,13 @@ public class ContactService {
         contactRepository.save(contact);
     }
 
+    public void throwExceptionIfUserNotFound(String ownerUsername) {
+        if (!userRepository.existsByUsername(ownerUsername))
+            throw new UserNotFoundException("User with username=" + ownerUsername + " not found");
+    }
+
     public List<UserDto> getContacts(String ownerUsername){
-        if(!userRepository.existsByUsername(ownerUsername))
-            throw new UserNotFoundException("User with username="+ownerUsername+" not found");
+        throwExceptionIfUserNotFound(ownerUsername);
         return contactRepository.selectUserDtoListByContactsOwner(ownerUsername);
     }
 
