@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(Lifecycle.PER_CLASS)
-@Sql({"/schema.sql","/test-data.sql"})
+@Sql({"/schema.sql", "/test-data.sql"})
 public class MessageControllerIntegrationTest {
 
     @Autowired

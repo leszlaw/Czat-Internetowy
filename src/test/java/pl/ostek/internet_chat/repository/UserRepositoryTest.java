@@ -10,7 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Sql({"/schema.sql","/test-data.sql"})
+@Sql({"/schema.sql", "/test-data.sql"})
 class UserRepositoryTest {
 
     @Autowired
