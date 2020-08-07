@@ -4,25 +4,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
+import pl.ostek.internet_chat.model.Message;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Sql("/schema.sql")
+@Sql({"/schema.sql","/test-data.sql"})
 class MessageRepositoryTest {
 
     @Autowired
-    private MessageRepository messageRepository;
+    MessageRepository messageRepository;
 
     @Test
-    @Sql({"/schema.sql","/test-data.sql"})
-    public void findAll_3MessagesInRepository_Return3Messages(){
-        assertThat(messageRepository.findAll()).hasSize(3);
+    void findBySenderUsername_CorrectUsername_AllSenderMessagesReturned(){
+        Message message1=new Message("2","123","1","2");
+        Message message2=new Message("4","123","1","3");
+        assertThat(messageRepository.findByReceiverUsername("admin")).isEqualTo(Arrays.asList(message1,message2));
     }
-
-    @Test
-    public void findAll_EmptyRepository_ReturnEmptyArray(){
-        assertThat(messageRepository.findAll()).isEmpty();
-    }
-
 }

@@ -19,9 +19,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String message;
-    @Column(name = "receiver_id")
     private String receiverId;
-    @Column(name = "sender_id")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String senderId;
 

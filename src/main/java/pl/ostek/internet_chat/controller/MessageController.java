@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.ostek.internet_chat.model.Message;
 import pl.ostek.internet_chat.service.MessageService;
 
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -17,14 +18,14 @@ public class MessageController {
     private final MessageService messageService;
 
     @PostMapping
-    public void sendMessage(@RequestBody Message message){
-        messageService.sendMessage(message);
+    public void sendMessage(@RequestBody Message message, Principal principal){
+        messageService.sendMessage(message,principal.getName());
         log.info(message.toString()+" action=sendMessage status=successful");
     }
 
     @GetMapping
-    public List<Message> getAllMessages(){
-        var allMessages = messageService.getAllMessages();
+    public List<Message> getAllMessages(Principal principal){
+        var allMessages = messageService.getAllMessages(principal.getName());
         log.info("action=getAllMessages status=successful");
         return allMessages;
     }

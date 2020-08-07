@@ -11,6 +11,8 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,String> {
 
     public User findByUsername(String userName);
+    @Query("select id from User where username=?1")
+    public String findIdByUsername(String username);
     public boolean existsByUsername(String username);
     @Query("select id,username,email from User where username like ?1% and email like ?2%")
     public List<Object[]> selectValuesThatBeginWith(String startUsername,String email);

@@ -1,7 +1,10 @@
 package pl.ostek.internet_chat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,25 +21,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@Sql("/schema.sql")
+@AutoConfigureMockMvc
+@TestInstance(Lifecycle.PER_CLASS)
+@Sql({"/schema.sql","/test-data.sql"})
 public class MessageControllerIntegrationTest {
 
     @Autowired
-    private MockMvc mvc;
+    MockMvc mvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @Autowired
-    private MessageRepository messageRepository;
+    MessageRepository messageRepository;
+
+    TokenObtainer tokenObtainer;
+
+    @BeforeAll
+    void init(){
+        tokenObtainer=new TokenObtainer(mvc);
+    }
 
     @Test
-    public void sendMessage_CorrectMessage_StatusOk() throws Exception {
+    void sendMessage_CorrectMessage_StatusOk() throws Exception {
         //given
-        String jsonBody = "{\"message\":\"123\",\"receiverId\":\"Bob\",\"senderId\":null}";
+        String jsonBody = "{\"message\":\"123\",\"receiverId\":\"1\"}";
+        String token = tokenObtainer.obtainAccessToken("user","user");
         //when
         ResultActions result = mvc.perform(post("/messages")
+                .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody));
         //then
@@ -45,24 +58,23 @@ public class MessageControllerIntegrationTest {
         assertThat(messageRepository.findAll().get(0).getMessage())
                 .isEqualTo("123");
         assertThat(messageRepository.findAll().get(0).getReceiverId())
-                .isEqualTo("Bob");
+                .isEqualTo("2");
     }
 
     @Test
-    @Sql({"/schema.sql","/test-data.sql"})
-    public void getAllMessages_ThreeMessages_ReturnJsonArray() throws Exception {
+
+    void getAllMessages_TwoMessages_ReturnJsonArray() throws Exception {
         //given
-        String expectedJsonBody = "[{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":\"Eva\"}," +
-                "{\"message\":\"123\",\"receiverId\":\"Alice\",\"senderId\":\"Bob\"}," +
-                "{\"message\":\"123\",\"receiverId\":\"Bob\",\"senderId\":\"Alice\"}]";
+        String expectedJsonBody = "[{\"message\":\"123\",\"receiverId\":\"1\",\"senderId\":\"2\"}," +
+                "{\"message\":\"123\",\"receiverId\":\"1\",\"senderId\":\"3\"}]";
+        String token = tokenObtainer.obtainAccessToken("admin","admin");
         //when
         ResultActions result = mvc.perform(get("/messages")
-                .contentType(MediaType.APPLICATION_JSON));
+                .header("Authorization", "Bearer " + token));
         //then
         result.andExpect(status().isOk())
                 .andExpect(content().string(expectedJsonBody))
-                .andExpect(content().string(objectMapper.writeValueAsString(messageRepository.findAll())))
+                .andExpect(content().string(objectMapper.writeValueAsString(messageRepository.findByReceiverUsername("admin"))))
                 .andDo(print());
-
     }
 }
