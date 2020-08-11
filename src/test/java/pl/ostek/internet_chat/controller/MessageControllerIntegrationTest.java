@@ -12,7 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import pl.ostek.internet_chat.model.dto.MessageDto;
 import pl.ostek.internet_chat.repository.MessageRepository;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,8 +48,9 @@ public class MessageControllerIntegrationTest {
     @Test
     void sendMessage_CorrectMessage_StatusOk() throws Exception {
         //given
-        String jsonBody = "{\"message\":\"123\",\"receiverId\":\"1\"}";
+        String jsonBody = "{\"message\":\"hi\",\"receiverUsername\":\"alice\"}";
         String token = tokenObtainer.obtainAccessToken("user","user");
+        MessageDto expected=new MessageDto("hi","alice","user");
         //when
         ResultActions result = mvc.perform(post("/messages")
                 .header("Authorization", "Bearer " + token)
@@ -55,18 +59,16 @@ public class MessageControllerIntegrationTest {
         //then
         result.andExpect(status().isOk())
                 .andDo(print());
-        assertThat(messageRepository.findAll().get(0).getMessage())
-                .isEqualTo("123");
-        assertThat(messageRepository.findAll().get(0).getReceiverId())
-                .isEqualTo("2");
+        List<MessageDto> list=messageRepository.findDtoByReceiverUsername("alice");
+        assertThat(list.get(list.size()-1)).isEqualTo(expected);
     }
 
     @Test
 
     void getAllMessages_TwoMessages_ReturnJsonArray() throws Exception {
         //given
-        String expectedJsonBody = "[{\"message\":\"123\",\"receiverId\":\"1\",\"senderId\":\"2\"}," +
-                "{\"message\":\"123\",\"receiverId\":\"1\",\"senderId\":\"3\"}]";
+        String expectedJsonBody = "[{\"message\":\"123\",\"receiverUsername\":\"admin\",\"senderUsername\":\"user\"}," +
+                "{\"message\":\"123\",\"receiverUsername\":\"admin\",\"senderUsername\":\"alice\"}]";
         String token = tokenObtainer.obtainAccessToken("admin","admin");
         //when
         ResultActions result = mvc.perform(get("/messages")
@@ -74,7 +76,7 @@ public class MessageControllerIntegrationTest {
         //then
         result.andExpect(status().isOk())
                 .andExpect(content().string(expectedJsonBody))
-                .andExpect(content().string(objectMapper.writeValueAsString(messageRepository.findByReceiverUsername("admin"))))
+                .andExpect(content().string(objectMapper.writeValueAsString(messageRepository.findDtoByReceiverUsername("admin"))))
                 .andDo(print());
     }
 }

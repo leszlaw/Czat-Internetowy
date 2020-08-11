@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import pl.ostek.internet_chat.exception.SuchUserExistsException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
-import pl.ostek.internet_chat.model.UserDto;
-import pl.ostek.internet_chat.model.User;
+import pl.ostek.internet_chat.model.dto.UserDto;
+import pl.ostek.internet_chat.model.entity.User;
 import pl.ostek.internet_chat.repository.UserRepository;
 
 import java.util.*;

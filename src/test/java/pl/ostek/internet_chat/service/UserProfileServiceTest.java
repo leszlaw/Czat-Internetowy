@@ -9,9 +9,9 @@ import pl.ostek.internet_chat.exception.InvalidProfileException;
 import pl.ostek.internet_chat.exception.ProfileDoesNotExistsException;
 import pl.ostek.internet_chat.exception.ProfileExistsException;
 import pl.ostek.internet_chat.exception.SuchUserDoesNotExistsException;
-import pl.ostek.internet_chat.model.Gender;
-import pl.ostek.internet_chat.model.User;
-import pl.ostek.internet_chat.model.UserProfile;
+import pl.ostek.internet_chat.model.entity.Gender;
+import pl.ostek.internet_chat.model.entity.User;
+import pl.ostek.internet_chat.model.entity.UserProfile;
 import pl.ostek.internet_chat.repository.UserProfileRepository;
 import pl.ostek.internet_chat.repository.UserRepository;
 

@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import pl.ostek.internet_chat.model.UserDto;
+import pl.ostek.internet_chat.model.dto.UserDto;
 import pl.ostek.internet_chat.service.ContactService;
 import pl.ostek.internet_chat.service.UserService;
 

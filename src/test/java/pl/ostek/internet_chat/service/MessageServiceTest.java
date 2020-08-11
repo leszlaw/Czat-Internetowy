@@ -5,14 +5,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.ostek.internet_chat.model.Message;
+import pl.ostek.internet_chat.mapper.MessageMapper;
+import pl.ostek.internet_chat.model.dto.MessageDto;
+import pl.ostek.internet_chat.model.entity.Message;
 import pl.ostek.internet_chat.repository.MessageRepository;
-import pl.ostek.internet_chat.repository.UserRepository;
 import pl.ostek.internet_chat.validator.MessageValidator;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MessageServiceTest {
@@ -22,20 +22,22 @@ class MessageServiceTest {
     @Mock
     MessageRepository messageRepository;
     @Mock
-    UserRepository userRepository;
-    @Mock
     MessageValidator messageValidator;
+    @Mock
+    MessageMapper messageMapper;
 
     @Test
     void sendMessage_MessageSent_ReceiverHasMessage() {
         //given
-        Message message = Message.builder().build();
-        given(userRepository.findIdByUsername("admin")).willReturn("1");
+        MessageDto messageDto=new MessageDto();
+        Message message = new Message();
+        given(messageMapper.convertToEntity(messageDto)).willReturn(message);
         //when
-        messageService.sendMessage(message,"admin");
+        messageService.sendMessage(messageDto);
         //then
+        verify(messageMapper).convertToEntity(messageDto);
+        verify(messageValidator).validate(message);
         verify(messageRepository).save(message);
-        assertThat(message.getSenderId()).isEqualTo("1");
     }
 
 }

@@ -3,7 +3,7 @@ package pl.ostek.internet_chat.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import pl.ostek.internet_chat.model.User;
+import pl.ostek.internet_chat.model.entity.User;
 
 import java.util.List;
 

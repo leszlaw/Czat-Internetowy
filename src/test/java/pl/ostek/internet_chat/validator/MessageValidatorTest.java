@@ -11,19 +11,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.ostek.internet_chat.exception.BlankMessageException;
 import pl.ostek.internet_chat.exception.IncorrectMessageException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
-import pl.ostek.internet_chat.model.Message;
-import pl.ostek.internet_chat.repository.UserRepository;
+import pl.ostek.internet_chat.model.entity.Message;
+import pl.ostek.internet_chat.model.entity.User;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class MessageValidatorTest {
 
     @InjectMocks
     MessageValidator messageValidator;
-    @Mock
-    UserRepository userRepository;
 
     @ParameterizedTest(name = "Validate message with message=\"{0}\" throws exception.")
     @NullAndEmptySource
@@ -40,27 +37,26 @@ public class MessageValidatorTest {
     @Test
     void validate_SenderNotExists_ExceptionThrown(){
         //given
-        Message message = Message.builder().message("123").senderId("1").build();
+        Message message = Message.builder().message("123").receiver(new User()).build();
         assertThatThrownBy(() -> {
             messageValidator.validate(message);
-        }).isInstanceOf(UserNotFoundException.class).hasMessageContaining("User with id=1 not found");
+        }).isInstanceOf(UserNotFoundException.class).hasMessageContaining("Sender not found!");
     }
 
     @Test
     void validate_ReceiverNotExists_ExceptionThrown(){
         //given
-        given(userRepository.existsById("1")).willReturn(true);
-        Message message = Message.builder().message("123").senderId("1").receiverId("2").build();
+        Message message = Message.builder().message("123").build();
         assertThatThrownBy(() -> {
             messageValidator.validate(message);
-        }).isInstanceOf(UserNotFoundException.class).hasMessageContaining("User with id=2 not found");
+        }).isInstanceOf(UserNotFoundException.class).hasMessageContaining("Receiver not found!");
     }
 
     @Test
     void validate_SenderEqualsReceiver_ExceptionThrown(){
         //given
-        given(userRepository.existsById("1")).willReturn(true);
-        Message message = Message.builder().message("123").senderId("1").receiverId("1").build();
+        User user=new User();
+        Message message = Message.builder().message("123").receiver(user).sender(user).build();
         assertThatThrownBy(() -> {
             messageValidator.validate(message);
         }).isInstanceOf(IncorrectMessageException.class).hasMessageContaining("You cannot send message to yourself!");

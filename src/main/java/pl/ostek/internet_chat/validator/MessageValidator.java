@@ -3,11 +3,10 @@ package pl.ostek.internet_chat.validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.ostek.internet_chat.exception.BlankMessageException;
-import pl.ostek.internet_chat.exception.IncorrectContactException;
 import pl.ostek.internet_chat.exception.IncorrectMessageException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
-import pl.ostek.internet_chat.model.Message;
-import pl.ostek.internet_chat.repository.UserRepository;
+import pl.ostek.internet_chat.model.entity.Message;
+import pl.ostek.internet_chat.model.entity.User;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -15,15 +14,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class MessageValidator {
 
-    private final UserRepository userRepository;
-
     public void validate(Message message){
         throwExceptionIfMessageIsBlank(message);
-        String senderId=message.getSenderId();
-        String receiverId=message.getReceiverId();
-        throwExceptionIfUserNotFound(senderId);
-        throwExceptionIfUserNotFound(receiverId);
-        throwExceptionIfSenderIdEqualsReceiverId(senderId,receiverId);
+        throwExceptionIfUserIsNull(message.getReceiver(),"Receiver not found!");
+        throwExceptionIfUserIsNull(message.getSender(),"Sender not found!");
+        throwExceptionIfSenderEqualsReceiver(message.getSender(),message.getReceiver());
     }
 
     private void throwExceptionIfMessageIsBlank(Message message) {
@@ -31,13 +26,13 @@ public class MessageValidator {
             throw new BlankMessageException("Message should not be blank!");
     }
 
-    private void throwExceptionIfUserNotFound(String userId) {
-        if (!userRepository.existsById(userId))
-            throw new UserNotFoundException("User with id=" + userId + " not found");
+    private void throwExceptionIfUserIsNull(User user,String message) {
+        if (user==null)
+            throw new UserNotFoundException(message);
     }
 
-    private void throwExceptionIfSenderIdEqualsReceiverId(String senderId, String receiverId) {
-        if(senderId.equals(receiverId))
+    private void throwExceptionIfSenderEqualsReceiver(User sender, User receiver) {
+        if(sender.equals(receiver))
             throw new IncorrectMessageException("You cannot send message to yourself!");
     }
 

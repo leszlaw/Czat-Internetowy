@@ -1,7 +1,5 @@
-package pl.ostek.internet_chat.model;
+package pl.ostek.internet_chat.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,12 +13,14 @@ import javax.persistence.*;
 public class Message {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String message;
-    private String receiverId;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private String senderId;
+    @ManyToOne
+    @JoinColumn(name="receiver_id", nullable=false)
+    private User receiver;
+    @ManyToOne
+    @JoinColumn(name="sender_id", nullable=false)
+    private User sender;
 
 }
