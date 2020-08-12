@@ -1,6 +1,7 @@
-INSERT INTO messages (message,receiver_id,sender_id) VALUES ('123','Alice','Eva');
-INSERT INTO messages (message,receiver_id,sender_id) VALUES ('123','Alice','Bob');
-INSERT INTO messages (message,receiver_id,sender_id) VALUES ('123','Bob','Alice');
+INSERT INTO messages (message,receiver_id,sender_id) VALUES ('123','2','1');
+INSERT INTO messages (message,receiver_id,sender_id) VALUES ('123','1','2');
+INSERT INTO messages (message,receiver_id,sender_id) VALUES ('123','3','1');
+INSERT INTO messages (message,receiver_id,sender_id) VALUES ('123','1','3');
 
 INSERT INTO users (username,password,email,role) VALUES ('admin','$2y$10$repOODoMvaOaFWUVHJXFP.xivRUZUkKu5iMIiD755vOnafok0oUPm','admin@office.pl','admin');
 INSERT INTO users (username,password,email,role) VALUES ('user','$2y$10$UIzmVccvEIJr5it1pxvGGeXvtLS952pco/1yl1LXhtyx91TYNrAE.','user@office.pl','user');

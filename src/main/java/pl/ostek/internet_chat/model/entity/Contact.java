@@ -1,4 +1,4 @@
-package pl.ostek.internet_chat.model;
+package pl.ostek.internet_chat.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

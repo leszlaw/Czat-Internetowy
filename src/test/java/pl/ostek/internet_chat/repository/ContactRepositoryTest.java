@@ -6,14 +6,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
-import pl.ostek.internet_chat.model.UserDto;
+import pl.ostek.internet_chat.model.dto.UserDto;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Sql({"/schema.sql","/test-data.sql"})
+@Sql({"/schema.sql", "/test-data.sql"})
 public class ContactRepositoryTest {
 
     @Autowired

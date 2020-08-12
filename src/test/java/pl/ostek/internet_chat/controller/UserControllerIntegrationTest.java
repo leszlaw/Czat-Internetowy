@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import pl.ostek.internet_chat.model.UserDto;
+import pl.ostek.internet_chat.model.dto.UserDto;
 import pl.ostek.internet_chat.repository.UserRepository;
 
 import java.util.Arrays;

@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.ostek.internet_chat.exception.IncorrectContactException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
-import pl.ostek.internet_chat.model.Contact;
+import pl.ostek.internet_chat.model.entity.Contact;
 import pl.ostek.internet_chat.repository.ContactRepository;
 import pl.ostek.internet_chat.repository.UserRepository;
 

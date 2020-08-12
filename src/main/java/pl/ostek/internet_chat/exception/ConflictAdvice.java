@@ -13,7 +13,7 @@ public class ConflictAdvice {
 
     @ResponseBody
     @ExceptionHandler({SuchUserExistsException.class, ProfileExistsException.class,
-            IncorrectContactException.class})
+            IncorrectContactException.class,IncorrectMessageException.class})
     public ResponseEntity<Object> handleConflictError(RuntimeException ex) {
         log.warn("Returning Http 409 Conflict " + ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);

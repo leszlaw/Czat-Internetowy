@@ -3,8 +3,8 @@ package pl.ostek.internet_chat.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import pl.ostek.internet_chat.model.Gender;
-import pl.ostek.internet_chat.model.UserProfile;
+import pl.ostek.internet_chat.model.entity.Gender;
+import pl.ostek.internet_chat.model.entity.UserProfile;
 import pl.ostek.internet_chat.service.UserProfileService;
 
 import java.security.Principal;
