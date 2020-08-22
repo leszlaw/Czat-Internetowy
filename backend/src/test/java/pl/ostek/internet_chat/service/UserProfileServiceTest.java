@@ -8,7 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import pl.ostek.internet_chat.exception.InvalidProfileException;
 import pl.ostek.internet_chat.exception.ProfileDoesNotExistsException;
 import pl.ostek.internet_chat.exception.ProfileExistsException;
-import pl.ostek.internet_chat.exception.SuchUserDoesNotExistsException;
+import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.entity.Gender;
 import pl.ostek.internet_chat.model.entity.User;
 import pl.ostek.internet_chat.model.entity.UserProfile;
@@ -70,8 +70,8 @@ public class UserProfileServiceTest {
         //expected
         assertThatThrownBy(() -> {
             userProfileService.createProfile(userProfile, "adam");
-        }).isInstanceOf(SuchUserDoesNotExistsException.class)
-                .hasMessageContaining("User adam does not exists!");
+        }).isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User adam not found!");
     }
 
     @Test

@@ -1,38 +1,36 @@
 package pl.ostek.internet_chat.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import pl.ostek.internet_chat.exception.SuchUserExistsException;
-import pl.ostek.internet_chat.exception.UserNotFoundException;
-import pl.ostek.internet_chat.model.dto.UserDto;
+import pl.ostek.internet_chat.exception.UserAlreadyExistsException;
 import pl.ostek.internet_chat.model.entity.User;
 import pl.ostek.internet_chat.repository.UserRepository;
-
-import java.util.*;
+import pl.ostek.internet_chat.validator.UserValidator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
+    @InjectMocks
     private UserService userService;
+    @Mock
     private UserRepository userRepository;
+    @Mock
     private BCryptPasswordEncoder encoder;
-
-    @BeforeEach
-    public void initEach() {
-        userRepository = mock(UserRepository.class);
-        encoder = mock(BCryptPasswordEncoder.class);
-        userService = new UserService(userRepository, encoder);
-    }
+    @Mock
+    private UserValidator userValidator;
 
     @Test
     void loadByUserName_CorrectUsername_ReturnUser() {
@@ -66,7 +64,6 @@ public class UserServiceTest {
         //given
         User user=User.builder().username("user").password("user").build();
         String encodedPassword="$2y$10$aj59zdvYC0hzTIoWuj8ALe79aotkQVE2pkLywYOFWNa60X9DwMRDy";
-        given(userRepository.existsByUsername("user")).willReturn(false);
         given(encoder.encode("user"))
                 .willReturn(encodedPassword);
         //when
@@ -74,79 +71,22 @@ public class UserServiceTest {
         //then
         assertThat(user.getPassword()).isEqualTo(encodedPassword);
         assertThat(user.getRole()).isEqualTo("user");
-        verify(userRepository).existsByUsername("user");
         verify(encoder).encode("user");
+        verify(userRepository).save(user);
     }
 
     @Test
     void createUser_UserExists_ExceptionThrown(){
         //given
-        User user=User.builder().username("admin").password("admin").build();
-        given(userRepository.existsByUsername("admin")).willReturn(true);
+        User user=User.builder().username("admin").build();
+        given(userRepository.existsByUsername("admin"))
+                .willReturn(true);
         //expected
         assertThatThrownBy(() -> {
             userService.createUser(user);
-        }).isInstanceOf(SuchUserExistsException.class)
-                .hasMessageContaining("User \""+user.getUsername()+"\""+" already exists!");
-        verify(userRepository).existsByUsername("admin");
+        }).isInstanceOf(UserAlreadyExistsException.class)
+                .hasMessageContaining("User with username=admin already exists!");
     }
 
-    @Test
-    void findUser_CorrectId_UserReturned(){
-        //given
-        User given=User.builder().id("1").username("admin").build();
-        given(userRepository.findById("1")).willReturn(Optional.of(given));
-        //when
-        User result=userService.findUser("1");
-        //then
-        assertThat(result).isEqualTo(given);
-    }
-
-    @Test
-    void findUser_WrongId_ExceptionThrown(){
-        //given
-        given(userRepository.findById("1")).willReturn(Optional.empty());
-        assertThatThrownBy(() -> {
-            userService.findUser("1");
-        }).isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining("User with id=1 not found");
-        verify(userRepository).findById("1");
-    }
-
-    @Test
-    void findUsersThatBeginWith_CommonValues_ArrayReturned(){
-        //given
-        Object[] adam=new Object[]{"1","adam","adam@office.pl"};
-        Object[] alice=new Object[]{"2","alice","alice@office.pl"};
-        List<Object[]> values= Arrays.asList(adam, alice);
-        given(userRepository.selectValuesThatBeginWith("a","a")).willReturn(values);
-        //when
-        List<UserDto> userDtos =userService.findUsersThatBeginWith("a","a");
-        //then
-        assertThat(simplifiedUserToArray(userDtos.get(0))).isEqualTo(adam);
-        assertThat(simplifiedUserToArray(userDtos.get(1))).isEqualTo(alice);
-        assertThat(userDtos).hasSize(2);
-        verify(userRepository).selectValuesThatBeginWith("a","a");
-    }
-
-    @Test
-    void findUsersThatBeginWith_NullSource_ArrayReturned(){
-        //given
-        Object[] adam=new Object[]{"1","adam","adam@office.pl"};
-        Object[] alice=new Object[]{"2","alice","alice@office.pl"};
-        List<Object[]> values= Arrays.asList(adam, alice);
-        given(userRepository.selectValuesThatBeginWith("","")).willReturn(values);
-        //when
-        List<UserDto> userDtos =userService.findUsersThatBeginWith(null,null);
-        //then
-        assertThat(simplifiedUserToArray(userDtos.get(0))).isEqualTo(adam);
-        assertThat(simplifiedUserToArray(userDtos.get(1))).isEqualTo(alice);
-        assertThat(userDtos).hasSize(2);
-        verify(userRepository).selectValuesThatBeginWith("","");
-    }
-
-    private Object[] simplifiedUserToArray(UserDto userDto){
-        return new Object[]{userDto.getId(), userDto.getUsername(), userDto.getEmail()};
-    }
 
 }

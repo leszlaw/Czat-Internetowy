@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.ostek.internet_chat.exception.InvalidProfileException;
 import pl.ostek.internet_chat.exception.ProfileDoesNotExistsException;
 import pl.ostek.internet_chat.exception.ProfileExistsException;
-import pl.ostek.internet_chat.exception.SuchUserDoesNotExistsException;
+import pl.ostek.internet_chat.exception.UserNotFoundException;
 import pl.ostek.internet_chat.model.entity.User;
 import pl.ostek.internet_chat.model.entity.UserProfile;
 import pl.ostek.internet_chat.repository.UserProfileRepository;
@@ -22,7 +22,7 @@ public class UserProfileService {
         checkIfProfileIsCorrect(userProfile);
         User user=userRepository.findByUsername(username);
         if(user==null)
-            throw new SuchUserDoesNotExistsException(username);
+            throw new UserNotFoundException("User "+username+" not found!");
         if (user.getUserProfile() != null)
             throw new ProfileExistsException(user.getUserProfile());
         userProfile.setUser(user);

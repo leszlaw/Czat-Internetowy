@@ -40,9 +40,9 @@ class UserRepositoryTest {
     @ParameterizedTest(name = "Select values that username start with \"{0}\" and email " +
             "start with {1} returned {2} objects.")
     @CsvSource(value = {"a,a,2","u,u,1","b,B,1"})
-    void selectValuesThatBeginWith_StartsWithChar_ReturnValues(String startUsername
+    void selectUserDtoThatBeginWith_StartsWithChar_ReturnValues(String startUsername
             ,String startEmail, int size) {
-        assertThat(userRepository.selectValuesThatBeginWith(startUsername,startEmail)).hasSize(size);
+        assertThat(userRepository.selectUserDtoThatBeginWith(startUsername,startEmail)).hasSize(size);
     }
 
     @ParameterizedTest(name = "Find by username={0} return id={1}")
