@@ -18,7 +18,7 @@ import { RouterModule } from '@angular/router';
     MatButtonModule,
     MatIconModule,
     CommonModule,
-    RouterModule,
+    RouterModule
   ]
 })
 export class SharedModule { }
