@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MaterialModule } from './modules/material.module'
 
 
 @NgModule({
@@ -14,11 +13,10 @@ import { RouterModule } from '@angular/router';
   ],
   exports:[
     HttpClientModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
     CommonModule,
     RouterModule,
+    FormsModule,
+    MaterialModule,
   ]
 })
 export class SharedModule { }

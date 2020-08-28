@@ -1,1 +1,32 @@
-<p>login works!</p>
+<div class="center">
+
+  <div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center">
+
+    <mat-card class="box">
+      <mat-card-header>
+        <mat-card-title>Log in</mat-card-title>
+      </mat-card-header>
+
+      <form class="example-form" #ngForm="ngForm" (ngSubmit)="onSubmit(ngForm)" novalidate>
+        <mat-card-content>
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Username" ngModel name="Username" required>
+          </mat-form-field>
+
+          <mat-form-field class="example-full-width">
+            <input matInput placeholder="Password" ngModel type="password" name="Password" required>
+          </mat-form-field>
+        </mat-card-content>
+
+        <button mat-flat-button color="primary" type="submit" class="btn-block">Log in</button>
+
+        <div *ngIf="isLoginError" class="error-message">
+          <i class="material-icons">error</i> Incorrect username or password
+        </div>
+
+      </form>
+    </mat-card>
+
+  </div>
+
+</div>
