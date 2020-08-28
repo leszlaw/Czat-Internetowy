@@ -1,9 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ChatComponent } from './chat.component'
+import { MessagesComponent } from './components/messages/messages.component';
 
 const routes: Routes = [
-{path: '', component: ChatComponent}
+    {path: '',
+    component: ChatComponent,
+    children: [
+          {
+            path: '',
+            component: MessagesComponent
+          }]
+    }
 ];
 
 @NgModule({
