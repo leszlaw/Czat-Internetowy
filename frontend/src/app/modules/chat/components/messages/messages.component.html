@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Send</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="example-form">
+      <mat-form-field class="example-full-width">
+        <mat-label>Write receiver username</mat-label>
+        <input matInput placeholder="Username" #username>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>Write a message</mat-label>
+        <textarea matInput placeholder="Message" #msg></textarea>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+  <button mat-button color="primary" (click)="sendMessage(username.value,msg.value)">Send</button>
+  </mat-card-actions>
+</mat-card>
+
+
+<mat-list>
+  <div mat-subheader>Messages</div>
+  <mat-list-item *ngFor="let message of messages">
+    <mat-icon mat-list-icon>message</mat-icon>
+    <div mat-line>{{message.senderUsername}}</div>
+    <div mat-line>{{message.message}}</div>
+  </mat-list-item>
+</mat-list>
+
