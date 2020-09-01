@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ConflictAdvice {
 
     @ResponseBody
-    @ExceptionHandler({UserAlreadyExistsException.class, ProfileExistsException.class,
+    @ExceptionHandler({UserAlreadyExistsException.class, ProfileAlreadyExistsException.class,
             IncorrectContactException.class,IncorrectMessageException.class})
     public ResponseEntity<Object> handleConflictError(RuntimeException ex) {
         log.warn("Returning Http 409 Conflict " + ex);

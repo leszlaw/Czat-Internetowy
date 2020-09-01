@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class NotFoundAdvice {
 
     @ResponseBody
-    @ExceptionHandler({ProfileDoesNotExistsException.class, UserNotFoundException.class,
+    @ExceptionHandler({ProfileNotFoundException.class, UserNotFoundException.class,
             UsernameNotFoundException.class})
     public ResponseEntity<Object> handleNotFoundError(RuntimeException ex) {
         log.warn("Returning Http 404 Not found " + ex);
