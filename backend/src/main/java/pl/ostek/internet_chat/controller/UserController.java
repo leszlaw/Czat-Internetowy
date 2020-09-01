@@ -17,15 +17,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping
     public void createUser(@RequestBody User user) {
         userService.createUser(user);
         log.info(user.toString() + " action=createUser status=successful");
-    }
-
-    @GetMapping("/{id}")
-    public User findUser(@PathVariable(name = "id") String id) {
-        return userService.findUser(id);
     }
 
     @GetMapping

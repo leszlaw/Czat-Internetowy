@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class BadRequestAdvice {
 
     @ResponseBody
-    @ExceptionHandler({BlankMessageException.class, InvalidProfileException.class})
+    @ExceptionHandler({BlankMessageException.class, InvalidProfileException.class, IncorrectUserException.class})
     public ResponseEntity<Object> handleBadRequestError(RuntimeException ex) {
         log.warn("Returning Http 400 Bad Request " + ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);

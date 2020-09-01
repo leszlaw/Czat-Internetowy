@@ -1,7 +1,9 @@
 package pl.ostek.internet_chat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,25 +24,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @Sql({"/schema.sql", "/test-data.sql"})
 public class UserControllerIntegrationTest {
 
     @Autowired
-    private MockMvc mvc;
+    MockMvc mvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Test
-    public void createUser_CorrectUsername_NewUserCreated() throws Exception {
+    void createUser_CorrectUsername_NewUserCreated() throws Exception {
         //given
-        String jsonBody = "{\"username\":\"adam\",\"password\":\"malysz\"}";
+        String jsonBody = "{\"username\":\"adam\",\"password\":\"malysz\",\"email\":\"adam@office.pl\"}";
         //when
-        ResultActions result = mvc.perform(post("/users/signup")
+        ResultActions result = mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody));
         //then
@@ -51,48 +53,35 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void createUser_UsernameExists_ConflictMessageShown() throws Exception {
+    void createUser_UserExists_ConflictShown() throws Exception {
         //given
-        String jsonBody = "{\"username\":\"admin\",\"password\":\"admin\"}";
+        String jsonBody = "{\"username\":\"admin\",\"password\":\"admin\",\"email\":\"admin@office.pl\"}";
         //when
-        ResultActions result = mvc.perform(post("/users/signup")
+        ResultActions result = mvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody));
         //then
         result.andExpect(status().isConflict())
-                .andExpect(content().string("User \"admin\"" + " already exists!"))
+                .andExpect(content().string("User with username=admin already exists!"))
                 .andDo(print());
     }
 
     @Test
-    public void findUser_UserExists_UserReturned() throws Exception {
+    void createUser_BlankUser_BadRequestShown() throws Exception {
         //given
-        String expectedJsonBody = "{\"id\":\"1\",\"username\":\"admin\"," +
-                "\"email\":\"admin@office.pl\"," +
-                "\"userProfile\":{\"gender\":\"FEMALE\",\"description\":\"I am admin\"}}";
+        String jsonBody = "{\"username\":\"\",\"password\":\"admin\",\"email\":\"admin@office.pl\"}";
         //when
-        ResultActions result = mvc.perform(get("/users/1")
-                .contentType(MediaType.APPLICATION_JSON));
+        ResultActions result = mvc.perform(post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonBody));
         //then
-        result.andExpect(status().isOk())
-                .andExpect(content().string(expectedJsonBody))
-                .andExpect(content().string(objectMapper.writeValueAsString(userRepository.findById("1"))))
+        result.andExpect(status().isBadRequest())
+                .andExpect(content().string("User data should not be blank!"))
                 .andDo(print());
     }
 
     @Test
-    public void findUser_UserNotExist_NotFoundMessageShown() throws Exception {
-        //when
-        ResultActions result = mvc.perform(get("/users/5")
-                .contentType(MediaType.APPLICATION_JSON));
-        //then
-        result.andExpect(status().isNotFound())
-                .andExpect(content().string("User with id=5 not found"))
-                .andDo(print());
-    }
-
-    @Test
-    public void findUsers_UserStartsWithA_UserReturned() throws Exception {
+    void findUsers_UserStartsWithA_UserReturned() throws Exception {
         String expectedJsonBody = "[{\"id\":\"1\",\"username\":\"admin\",\"email\":\"admin@office.pl\"}" +
                 ",{\"id\":\"3\",\"username\":\"alice\",\"email\":\"alice@office.pl\"}]";
         //when
