@@ -1,38 +1,40 @@
 package pl.ostek.internet_chat.service;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import pl.ostek.internet_chat.exception.InvalidProfileException;
-import pl.ostek.internet_chat.exception.ProfileDoesNotExistsException;
-import pl.ostek.internet_chat.exception.ProfileExistsException;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import pl.ostek.internet_chat.exception.ProfileAlreadyExistsException;
 import pl.ostek.internet_chat.exception.UserNotFoundException;
+import pl.ostek.internet_chat.mapper.UserProfileMapper;
 import pl.ostek.internet_chat.model.entity.Gender;
 import pl.ostek.internet_chat.model.entity.User;
 import pl.ostek.internet_chat.model.entity.UserProfile;
 import pl.ostek.internet_chat.repository.UserProfileRepository;
 import pl.ostek.internet_chat.repository.UserRepository;
+import pl.ostek.internet_chat.validator.UserProfileValidator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 public class UserProfileServiceTest {
 
-    private UserProfileService userProfileService;
-    private UserProfileRepository userProfileRepository;
-    private UserRepository userRepository;
-
-    @BeforeEach
-    public void initEach() {
-        userProfileRepository = mock(UserProfileRepository.class);
-        userRepository = mock(UserRepository.class);
-        userProfileService = new UserProfileService(userProfileRepository, userRepository);
-    }
+    @InjectMocks
+    UserProfileService userProfileService;
+    @Mock
+    UserProfileRepository userProfileRepository;
+    @Mock
+    UserRepository userRepository;
+    @Mock
+    UserProfileValidator userProfileValidator;
+    @Mock
+    UserProfileMapper userProfileMapper;
 
     @Test
     void createProfile_UserWithoutProfile_ProfileCreated() {
@@ -58,7 +60,7 @@ public class UserProfileServiceTest {
         //expected
         assertThatThrownBy(() -> {
             userProfileService.createProfile(userProfile, "adam");
-        }).isInstanceOf(ProfileExistsException.class)
+        }).isInstanceOf(ProfileAlreadyExistsException.class)
                 .hasMessageContaining("adam has already created a profile!");
     }
 
@@ -87,7 +89,6 @@ public class UserProfileServiceTest {
         //then
         assertThat(oldProfile.getDescription()).isEqualTo("new");
         assertThat(oldProfile.getGender()).isEqualTo(Gender.MALE);
-        verify(userProfileRepository).save(oldProfile);
     }
 
     @ParameterizedTest(name = "Set gender={0} and description={1} was successful.")
@@ -106,50 +107,6 @@ public class UserProfileServiceTest {
         //then
         assertThat(oldProfile.getGender()).isEqualTo(gender);
         assertThat(oldProfile.getDescription()).isEqualTo(description);
-        verify(userProfileRepository).save(oldProfile);
-    }
-
-    @Test
-    void getUserProfile_ProfileExists_ProfileReturned() {
-        //given
-        UserProfile userProfile = UserProfile.builder().description("123").build();
-        given(userProfileRepository.findByUsername("adam")).willReturn(userProfile);
-        //when
-        UserProfile returned = userProfileService.getUserProfile("adam");
-        //then
-        assertThat(returned).isEqualTo(userProfile);
-        verify(userProfileRepository).findByUsername("adam");
-    }
-
-    @Test
-    void getUserProfile_ProfileDoesNotExists_ExceptionThrown() {
-        //given
-        given(userProfileRepository.findByUsername("adam")).willReturn(null);
-        //expected
-        assertThatThrownBy(() -> {
-            userProfileService.getUserProfile("adam");
-        }).isInstanceOf(ProfileDoesNotExistsException.class)
-                .hasMessageContaining("Profile that belongs to adam does not exists!");
-    }
-
-    @Test
-    void checkIfProfileIsCorrect_NullProfile_ExceptionThrown() {
-        assertThatThrownBy(() -> {
-            userProfileService.checkIfProfileIsCorrect(null);
-        }).isInstanceOf(InvalidProfileException.class)
-                .hasMessageContaining("UserProfile should not be null!");
-    }
-
-    @Test
-    void checkIfProfileIsCorrect_Length256Description_ExceptionThrown() {
-        //given
-        String description = RandomStringUtils.random(256, true, true);
-        UserProfile userProfile = UserProfile.builder().description(description).build();
-        //expected
-        assertThatThrownBy(() -> {
-            userProfileService.checkIfProfileIsCorrect(userProfile);
-        }).isInstanceOf(InvalidProfileException.class)
-                .hasMessageContaining("Description should be shorter than 256 characters!");
     }
 
 }

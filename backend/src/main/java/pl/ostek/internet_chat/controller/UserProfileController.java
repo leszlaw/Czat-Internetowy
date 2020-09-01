@@ -3,7 +3,7 @@ package pl.ostek.internet_chat.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import pl.ostek.internet_chat.model.entity.Gender;
+import pl.ostek.internet_chat.model.dto.UserProfileDto;
 import pl.ostek.internet_chat.model.entity.UserProfile;
 import pl.ostek.internet_chat.service.UserProfileService;
 
@@ -32,15 +32,19 @@ public class UserProfileController {
 
     @PatchMapping
     public void editProfile(@RequestBody Map<String, String> updates, Principal principal) {
-        UserProfile userProfile = new UserProfile();
-        updates.forEach((s, v) -> {
-            if (s.equals("description"))
-                userProfile.setDescription(v);
-            else if (s.equals("gender"))
-                userProfile.setGender(Gender.valueOf(v));
-        });
-        userProfileService.partialUpdateProfile(userProfile, principal.getName());
+        userProfileService.partialUpdateProfile(updates, principal.getName());
         log.info(updates.toString() + "\" action=editProfile status=successful");
     }
+
+    @GetMapping
+    public UserProfileDto getProfile(Principal principal){
+        return userProfileService.getUserProfileDtoByUsername(principal.getName());
+    }
+
+    @GetMapping("/{id}")
+    public UserProfileDto getProfile(@PathVariable("id") String id){
+        return userProfileService.getUserProfileDtoById(id);
+    }
+
 
 }

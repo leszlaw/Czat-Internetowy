@@ -26,6 +26,7 @@ public class User implements UserDetails {
     private String email;
     private String role;
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY,
             cascade =  CascadeType.ALL,
             mappedBy = "user")
